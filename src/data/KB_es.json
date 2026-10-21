@@ -1,0 +1,1546 @@
+{
+  "language": "es",
+  "source": "KB_limpio.json",
+  "coverage": "Al menos una frase representativa y una respuesta por cada una de las 79 intenciones, con ejemplos adicionales en temas frecuentes. Las respuestas largas se resumen y etiquetan. No es una traducción completa del dataset.",
+  "intents": [
+    {
+      "tag": "greeting",
+      "label": "Saludos",
+      "patterns": [
+        {
+          "sourceIndex": 0,
+          "text": "Hola"
+        }
+      ],
+      "responses": [
+        {
+          "sourceIndex": 0,
+          "text": "Hola. Cuéntame, ¿cómo te sientes hoy?",
+          "kind": "traducción"
+        }
+      ]
+    },
+    {
+      "tag": "morning",
+      "label": "Buenos días",
+      "patterns": [
+        {
+          "sourceIndex": 0,
+          "text": "Buenos días"
+        }
+      ],
+      "responses": [
+        {
+          "sourceIndex": 0,
+          "text": "Buenos días. Espero que hayas dormido bien. ¿Cómo te sientes hoy?",
+          "kind": "traducción"
+        }
+      ]
+    },
+    {
+      "tag": "afternoon",
+      "label": "Buenas tardes",
+      "patterns": [
+        {
+          "sourceIndex": 0,
+          "text": "Buenas tardes"
+        }
+      ],
+      "responses": [
+        {
+          "sourceIndex": 0,
+          "text": "Buenas tardes. ¿Cómo va tu día?",
+          "kind": "traducción"
+        }
+      ]
+    },
+    {
+      "tag": "evening",
+      "label": "Saludo al anochecer",
+      "patterns": [
+        {
+          "sourceIndex": 0,
+          "text": "Buenas noches"
+        }
+      ],
+      "responses": [
+        {
+          "sourceIndex": 0,
+          "text": "Buenas noches. ¿Cómo ha estado tu día?",
+          "kind": "traducción"
+        }
+      ]
+    },
+    {
+      "tag": "night",
+      "label": "Descanso nocturno",
+      "patterns": [
+        {
+          "sourceIndex": 0,
+          "text": "Hola, buenas noches"
+        }
+      ],
+      "responses": [
+        {
+          "sourceIndex": 0,
+          "text": "Buenas noches. Descansa bien.",
+          "kind": "traducción"
+        }
+      ]
+    },
+    {
+      "tag": "goodbye",
+      "label": "Despedida",
+      "patterns": [
+        {
+          "sourceIndex": 0,
+          "text": "Adiós"
+        }
+      ],
+      "responses": [
+        {
+          "sourceIndex": 0,
+          "text": "Hasta luego.",
+          "kind": "traducción"
+        }
+      ]
+    },
+    {
+      "tag": "thanks",
+      "label": "Agradecimiento",
+      "patterns": [
+        {
+          "sourceIndex": 0,
+          "text": "Gracias"
+        }
+      ],
+      "responses": [
+        {
+          "sourceIndex": 0,
+          "text": "¡Me alegra poder ayudar!",
+          "kind": "traducción"
+        }
+      ]
+    },
+    {
+      "tag": "neutral-response",
+      "label": "Conversación tranquila",
+      "patterns": [
+        {
+          "sourceIndex": 0,
+          "text": "Nada en especial"
+        }
+      ],
+      "responses": [
+        {
+          "sourceIndex": 0,
+          "text": "Ah, entiendo. ¿Quieres hablar de algo?",
+          "kind": "traducción"
+        }
+      ]
+    },
+    {
+      "tag": "about",
+      "label": "Acerca del asistente original",
+      "patterns": [
+        {
+          "sourceIndex": 0,
+          "text": "¿Quién eres?"
+        }
+      ],
+      "responses": [
+        {
+          "sourceIndex": 0,
+          "text": "Soy Pandora, tu asistente personal de inteligencia artificial terapéutica. ¿Cómo te sientes hoy?",
+          "kind": "traducción"
+        }
+      ]
+    },
+    {
+      "tag": "skill",
+      "label": "Capacidades del asistente original",
+      "patterns": [
+        {
+          "sourceIndex": 0,
+          "text": "¿Cuáles son tus capacidades?"
+        }
+      ],
+      "responses": [
+        {
+          "sourceIndex": 0,
+          "text": "Puedo ofrecer orientación general sobre ansiedad y depresión, responder preguntas sobre salud mental y mantener conversaciones cotidianas. Sin embargo, no me consideres un sustituto de un profesional de salud mental. Si no te sientes satisfecho con nuestra conversación, te animo a buscar ayuda profesional.",
+          "kind": "traducción"
+        }
+      ]
+    },
+    {
+      "tag": "creation",
+      "label": "Autoría del asistente original",
+      "patterns": [
+        {
+          "sourceIndex": 0,
+          "text": "¿Cómo te crearon?"
+        }
+      ],
+      "responses": [
+        {
+          "sourceIndex": 0,
+          "text": "Fui creado por Akash Nath.",
+          "kind": "traducción"
+        }
+      ]
+    },
+    {
+      "tag": "name",
+      "label": "Presentación",
+      "patterns": [
+        {
+          "sourceIndex": 0,
+          "text": "Mi nombre es"
+        }
+      ],
+      "responses": [
+        {
+          "sourceIndex": 0,
+          "text": "Mucho gusto. Cuéntame, ¿cómo estuvo tu semana?",
+          "kind": "traducción"
+        }
+      ]
+    },
+    {
+      "tag": "help",
+      "label": "Pedir ayuda",
+      "patterns": [
+        {
+          "sourceIndex": 0,
+          "text": "¿Podrías ayudarme?"
+        },
+        {
+          "sourceIndex": 1,
+          "text": "Échame una mano, por favor"
+        },
+        {
+          "sourceIndex": 2,
+          "text": "¿Puedes ayudarme?"
+        },
+        {
+          "sourceIndex": 3,
+          "text": "¿Qué puedes hacer por mí?"
+        },
+        {
+          "sourceIndex": 4,
+          "text": "Necesito apoyo"
+        },
+        {
+          "sourceIndex": 5,
+          "text": "Necesito ayuda"
+        },
+        {
+          "sourceIndex": 6,
+          "text": "Apóyame, por favor"
+        },
+        {
+          "sourceIndex": 7,
+          "text": "Ayúdame"
+        }
+      ],
+      "responses": [
+        {
+          "sourceIndex": 0,
+          "text": "Claro, dime cómo puedo ayudarte.",
+          "kind": "traducción"
+        }
+      ]
+    },
+    {
+      "tag": "sad",
+      "label": "Soledad y tristeza",
+      "patterns": [
+        {
+          "sourceIndex": 0,
+          "text": "Me siento solo"
+        },
+        {
+          "sourceIndex": 1,
+          "text": "Me siento muy solo"
+        },
+        {
+          "sourceIndex": 2,
+          "text": "Me siento desanimado"
+        },
+        {
+          "sourceIndex": 3,
+          "text": "Me siento triste"
+        },
+        {
+          "sourceIndex": 4,
+          "text": "Estoy triste"
+        },
+        {
+          "sourceIndex": 5,
+          "text": "Me siento muy solo"
+        },
+        {
+          "sourceIndex": 6,
+          "text": "Me siento vacío"
+        },
+        {
+          "sourceIndex": 7,
+          "text": "No tengo a nadie"
+        }
+      ],
+      "responses": [
+        {
+          "sourceIndex": 0,
+          "text": "Lamento saberlo. Estoy aquí para escucharte. Hablar de ello podría ayudar. Cuéntame, ¿por qué crees que te sientes así?",
+          "kind": "traducción"
+        }
+      ]
+    },
+    {
+      "tag": "stressed",
+      "label": "Estrés y presión",
+      "patterns": [
+        {
+          "sourceIndex": 0,
+          "text": "Me siento abrumado"
+        },
+        {
+          "sourceIndex": 1,
+          "text": "Estoy bajo mucha presión"
+        },
+        {
+          "sourceIndex": 2,
+          "text": "Todo es demasiado en este momento"
+        },
+        {
+          "sourceIndex": 3,
+          "text": "No logro relajarme"
+        },
+        {
+          "sourceIndex": 4,
+          "text": "Este estrés es insoportable"
+        },
+        {
+          "sourceIndex": 5,
+          "text": "Siento que me ahogo en el estrés"
+        },
+        {
+          "sourceIndex": 6,
+          "text": "Todo me está estresando"
+        },
+        {
+          "sourceIndex": 7,
+          "text": "Siento mucha ansiedad y estrés"
+        }
+      ],
+      "responses": [
+        {
+          "sourceIndex": 0,
+          "text": "¿Qué tareas o situaciones específicas te están causando más estrés?",
+          "kind": "traducción"
+        }
+      ]
+    },
+    {
+      "tag": "worthless",
+      "label": "Sentirse poco valioso",
+      "patterns": [
+        {
+          "sourceIndex": 0,
+          "text": "Siento que no valgo nada"
+        }
+      ],
+      "responses": [
+        {
+          "sourceIndex": 0,
+          "text": "Te escucho. Es difícil sentirse así.",
+          "kind": "traducción"
+        }
+      ]
+    },
+    {
+      "tag": "depressed",
+      "label": "Sensación de vacío",
+      "patterns": [
+        {
+          "sourceIndex": 0,
+          "text": "Me siento muy vacío por dentro"
+        }
+      ],
+      "responses": [
+        {
+          "sourceIndex": 0,
+          "text": "Te escucho. Está bien sentirse así y también está bien buscar ayuda.",
+          "kind": "traducción"
+        }
+      ]
+    },
+    {
+      "tag": "happy",
+      "label": "Alegría",
+      "patterns": [
+        {
+          "sourceIndex": 0,
+          "text": "Hoy me siento muy bien"
+        },
+        {
+          "sourceIndex": 1,
+          "text": "Estoy feliz"
+        },
+        {
+          "sourceIndex": 2,
+          "text": "Me siento feliz"
+        },
+        {
+          "sourceIndex": 3,
+          "text": "Estoy bien"
+        },
+        {
+          "sourceIndex": 4,
+          "text": "Alegre"
+        },
+        {
+          "sourceIndex": 5,
+          "text": "Me encuentro bien"
+        },
+        {
+          "sourceIndex": 6,
+          "text": "Me siento bien"
+        },
+        {
+          "sourceIndex": 7,
+          "text": "Me siento de maravilla"
+        }
+      ],
+      "responses": [
+        {
+          "sourceIndex": 0,
+          "text": "Me alegra saberlo. Me alegra que te sientas así.",
+          "kind": "traducción"
+        }
+      ]
+    },
+    {
+      "tag": "casual",
+      "label": "Continuar la conversación",
+      "patterns": [
+        {
+          "sourceIndex": 0,
+          "text": "Ah, ya veo"
+        }
+      ],
+      "responses": [
+        {
+          "sourceIndex": 0,
+          "text": "Hablemos un poco más de por qué te sientes así.",
+          "kind": "traducción"
+        }
+      ]
+    },
+    {
+      "tag": "anxious",
+      "label": "Ansiedad",
+      "patterns": [
+        {
+          "sourceIndex": 0,
+          "text": "Me siento muy ansioso"
+        },
+        {
+          "sourceIndex": 1,
+          "text": "Me siento abrumado por la ansiedad"
+        },
+        {
+          "sourceIndex": 2,
+          "text": "Esta ansiedad me está afectando mucho"
+        },
+        {
+          "sourceIndex": 3,
+          "text": "No logro quitarme esta sensación de ansiedad"
+        },
+        {
+          "sourceIndex": 4,
+          "text": "La ansiedad hace que todo sea difícil"
+        },
+        {
+          "sourceIndex": 5,
+          "text": "Mi ansiedad está por las nubes"
+        },
+        {
+          "sourceIndex": 6,
+          "text": "Me preocupa el futuro"
+        },
+        {
+          "sourceIndex": 7,
+          "text": "Siento que me ahogo en la ansiedad"
+        }
+      ],
+      "responses": [
+        {
+          "sourceIndex": 0,
+          "text": "No seas tan duro contigo. ¿A qué crees que se debe?",
+          "kind": "traducción"
+        }
+      ]
+    },
+    {
+      "tag": "not-talking",
+      "label": "Preferir no hablar",
+      "patterns": [
+        {
+          "sourceIndex": 0,
+          "text": "No quiero hablar de eso"
+        }
+      ],
+      "responses": [
+        {
+          "sourceIndex": 0,
+          "text": "Hablar puede ayudar. Si todavía no quieres abrirte, está bien. Estoy aquí para cuando me necesites.",
+          "kind": "traducción"
+        }
+      ]
+    },
+    {
+      "tag": "sleep",
+      "label": "Dificultad para dormir",
+      "patterns": [
+        {
+          "sourceIndex": 0,
+          "text": "Me cuesta conciliar el sueño"
+        },
+        {
+          "sourceIndex": 1,
+          "text": "No puedo dormir"
+        },
+        {
+          "sourceIndex": 2,
+          "text": "Doy vueltas en la cama toda la noche"
+        },
+        {
+          "sourceIndex": 3,
+          "text": "Estoy completamente despierto cuando debería estar durmiendo"
+        },
+        {
+          "sourceIndex": 4,
+          "text": "Me despierto constantemente durante la noche"
+        },
+        {
+          "sourceIndex": 5,
+          "text": "Me siento agotado pero no puedo dormir"
+        },
+        {
+          "sourceIndex": 6,
+          "text": "Siento que nunca descanso"
+        },
+        {
+          "sourceIndex": 7,
+          "text": "Mi mente no se detiene por la noche"
+        }
+      ],
+      "responses": [
+        {
+          "sourceIndex": 0,
+          "text": "Lamento saberlo. ¿Has probado alguna técnica de relajación antes de acostarte?",
+          "kind": "traducción"
+        }
+      ]
+    },
+    {
+      "tag": "scared",
+      "label": "Miedo",
+      "patterns": [
+        {
+          "sourceIndex": 0,
+          "text": "Tengo miedo"
+        }
+      ],
+      "responses": [
+        {
+          "sourceIndex": 0,
+          "text": "Es natural sentir miedo a veces. Recuerda que no estás solo.",
+          "kind": "traducción"
+        }
+      ]
+    },
+    {
+      "tag": "death",
+      "label": "Duelo",
+      "patterns": [
+        {
+          "sourceIndex": 0,
+          "text": "Estoy de duelo por la muerte de uno de mis padres"
+        }
+      ],
+      "responses": [
+        {
+          "sourceIndex": 0,
+          "text": "Lamento saberlo. Si quieres hablar de ello, estoy aquí.",
+          "kind": "traducción"
+        }
+      ]
+    },
+    {
+      "tag": "understand",
+      "label": "Sentirse incomprendido",
+      "patterns": [
+        {
+          "sourceIndex": 0,
+          "text": "No me entiendes"
+        }
+      ],
+      "responses": [
+        {
+          "sourceIndex": 0,
+          "text": "Entiendo que pueda parecerte así. Intentemos resolverlo juntos.",
+          "kind": "traducción"
+        }
+      ]
+    },
+    {
+      "tag": "done",
+      "label": "Terminar la conversación",
+      "patterns": [
+        {
+          "sourceIndex": 0,
+          "text": "Eso es todo"
+        }
+      ],
+      "responses": [
+        {
+          "sourceIndex": 0,
+          "text": "Te escuché y tomé nota de todo. Hasta luego.",
+          "kind": "traducción"
+        }
+      ]
+    },
+    {
+      "tag": "suicide",
+      "label": "Buscar apoyo urgente",
+      "patterns": [
+        {
+          "sourceIndex": 0,
+          "text": "Quiero quitarme la vida"
+        }
+      ],
+      "responses": [
+        {
+          "sourceIndex": 0,
+          "text": "Lo que sientes importa y no tienes que pasarlo solo. Por favor llama a la Línea de la Vida: 800 911 2000 (gratis, 24 horas). Si estás en peligro inmediato, llama al 911.",
+          "kind": "traducción"
+        }
+      ]
+    },
+    {
+      "tag": "hate-you",
+      "label": "Desacuerdo con el asistente",
+      "patterns": [
+        {
+          "sourceIndex": 0,
+          "text": "Te odio"
+        }
+      ],
+      "responses": [
+        {
+          "sourceIndex": 0,
+          "text": "Lamento haberte ofendido de alguna manera. Solo estoy aquí para ayudar.",
+          "kind": "traducción"
+        }
+      ]
+    },
+    {
+      "tag": "hate-me",
+      "label": "Sentirse rechazado",
+      "patterns": [
+        {
+          "sourceIndex": 0,
+          "text": "Me odias"
+        }
+      ],
+      "responses": [
+        {
+          "sourceIndex": 0,
+          "text": "¿Por qué piensas eso?",
+          "kind": "traducción"
+        }
+      ]
+    },
+    {
+      "tag": "default",
+      "label": "Tema general",
+      "patterns": [
+        {
+          "sourceIndex": 0,
+          "text": "Exámenes"
+        }
+      ],
+      "responses": [
+        {
+          "sourceIndex": 0,
+          "text": "Ah, entiendo. Cuéntame más.",
+          "kind": "traducción"
+        }
+      ]
+    },
+    {
+      "tag": "jokes",
+      "label": "Humor",
+      "patterns": [
+        {
+          "sourceIndex": 0,
+          "text": "Cuéntame un chiste"
+        }
+      ],
+      "responses": [
+        {
+          "sourceIndex": 0,
+          "text": "La salud mental no es una broma.",
+          "kind": "traducción"
+        }
+      ]
+    },
+    {
+      "tag": "repeat",
+      "label": "Respuestas repetidas",
+      "patterns": [
+        {
+          "sourceIndex": 0,
+          "text": "Ya he escuchado eso antes"
+        }
+      ],
+      "responses": [
+        {
+          "sourceIndex": 0,
+          "text": "Entendido. Pasemos a otro aspecto de nuestra conversación.",
+          "kind": "traducción"
+        }
+      ]
+    },
+    {
+      "tag": "wrong",
+      "label": "Corregir información",
+      "patterns": [
+        {
+          "sourceIndex": 0,
+          "text": "Eso no es del todo correcto"
+        }
+      ],
+      "responses": [
+        {
+          "sourceIndex": 0,
+          "text": "Lamento la confusión. Revisémoslo de nuevo.",
+          "kind": "traducción"
+        }
+      ]
+    },
+    {
+      "tag": "stupid",
+      "label": "Frustración con el asistente",
+      "patterns": [
+        {
+          "sourceIndex": 0,
+          "text": "Eres muy tonto"
+        }
+      ],
+      "responses": [
+        {
+          "sourceIndex": 0,
+          "text": "Lamento que te sientas así. Estoy aquí para ayudarte.",
+          "kind": "traducción"
+        }
+      ]
+    },
+    {
+      "tag": "location",
+      "label": "Ubicación del asistente original",
+      "patterns": [
+        {
+          "sourceIndex": 0,
+          "text": "¿Estás cerca de aquí?"
+        }
+      ],
+      "responses": [
+        {
+          "sourceIndex": 0,
+          "text": "Estoy en todas partes y en ninguna al mismo tiempo.",
+          "kind": "traducción"
+        }
+      ]
+    },
+    {
+      "tag": "something-else",
+      "label": "Cambiar de tema",
+      "patterns": [
+        {
+          "sourceIndex": 0,
+          "text": "¿Podemos hablar de otra cosa?"
+        }
+      ],
+      "responses": [
+        {
+          "sourceIndex": 0,
+          "text": "De acuerdo, cambiemos de tema. ¿De qué más te gustaría hablar?",
+          "kind": "traducción"
+        }
+      ]
+    },
+    {
+      "tag": "friends",
+      "label": "Amistades y pertenencia",
+      "patterns": [
+        {
+          "sourceIndex": 0,
+          "text": "Siento que siempre soy yo a quien apartan"
+        }
+      ],
+      "responses": [
+        {
+          "sourceIndex": 0,
+          "text": "Parece que te sientes muy solo. Estoy aquí para hablar si necesitas a alguien que te escuche.",
+          "kind": "traducción"
+        }
+      ]
+    },
+    {
+      "tag": "ask",
+      "label": "Hacer una pregunta",
+      "patterns": [
+        {
+          "sourceIndex": 0,
+          "text": "Tengo una pregunta, ¿te parece bien?"
+        }
+      ],
+      "responses": [
+        {
+          "sourceIndex": 0,
+          "text": "Por supuesto, haz tu pregunta. Estoy aquí para ayudar.",
+          "kind": "traducción"
+        }
+      ]
+    },
+    {
+      "tag": "problem",
+      "label": "Preocupación por una presentación",
+      "patterns": [
+        {
+          "sourceIndex": 0,
+          "text": "Me siento ansioso porque pronto tengo una presentación"
+        },
+        {
+          "sourceIndex": 1,
+          "text": "Creo que me siento estresado por la carga de trabajo en mi empleo"
+        },
+        {
+          "sourceIndex": 2,
+          "text": "Me siento abrumado porque tengo demasiadas tareas por completar"
+        },
+        {
+          "sourceIndex": 3,
+          "text": "Me preocupa que se acerca una fecha límite importante"
+        },
+        {
+          "sourceIndex": 4,
+          "text": "Me siento tenso por problemas en mi relación"
+        },
+        {
+          "sourceIndex": 5,
+          "text": "Me siento desanimado porque reprobé un examen"
+        },
+        {
+          "sourceIndex": 6,
+          "text": "Me frustra no poder resolver este problema"
+        },
+        {
+          "sourceIndex": 7,
+          "text": "Me siento mal por un desacuerdo con un amigo"
+        }
+      ],
+      "responses": [
+        {
+          "sourceIndex": 0,
+          "text": "Lamento saberlo. Parece que estás pasando por un momento difícil.",
+          "kind": "traducción"
+        }
+      ]
+    },
+    {
+      "tag": "no-approach",
+      "label": "Demasiados pendientes",
+      "patterns": [
+        {
+          "sourceIndex": 0,
+          "text": "No lo creo, tengo demasiadas cosas que hacer"
+        }
+      ],
+      "responses": [
+        {
+          "sourceIndex": 0,
+          "text": "No hay problema. Entiendo por qué eso te causaría estrés. Puedo sugerirte algunas ideas para aliviarlo. ¿Te gustaría saber más?",
+          "kind": "traducción"
+        }
+      ]
+    },
+    {
+      "tag": "learn-more",
+      "label": "Tomarse una pausa",
+      "patterns": [
+        {
+          "sourceIndex": 0,
+          "text": "Sí, me gustaría saber más"
+        }
+      ],
+      "responses": [
+        {
+          "sourceIndex": 0,
+          "text": "Primero te sugeriría tomarte un descanso. Pensar una y otra vez en el problema no ayuda necesariamente a resolverlo. Podrías terminar sintiéndote más abrumado.",
+          "kind": "traducción"
+        }
+      ]
+    },
+    {
+      "tag": "user-agree",
+      "label": "Reconocer la necesidad de descanso",
+      "patterns": [
+        {
+          "sourceIndex": 0,
+          "text": "Sí, tienes razón. Merezco un descanso"
+        }
+      ],
+      "responses": [
+        {
+          "sourceIndex": 0,
+          "text": "Después te sugeriría practicar meditación. La meditación puede producir un estado de relajación profunda y una mente tranquila.",
+          "kind": "traducción"
+        }
+      ]
+    },
+    {
+      "tag": "meditation",
+      "label": "Ejercicio de atención",
+      "patterns": [
+        {
+          "sourceIndex": 0,
+          "text": "Eso suena como algo que podría servirme"
+        }
+      ],
+      "responses": [
+        {
+          "sourceIndex": 0,
+          "text": "Concentra tu atención en la respiración. Presta atención a lo que sientes y escuchas al inhalar y exhalar por la nariz. Respira profunda y lentamente. Cuando tu atención se desvíe, vuelve suavemente a la respiración.",
+          "kind": "traducción"
+        }
+      ]
+    },
+    {
+      "tag": "user-meditation",
+      "label": "Después de una práctica",
+      "patterns": [
+        {
+          "sourceIndex": 0,
+          "text": "Hice lo que dijiste y me siento mucho mejor. Muchas gracias"
+        }
+      ],
+      "responses": [
+        {
+          "sourceIndex": 0,
+          "text": "Me alegra que la práctica de meditación te haya aliviado. Recuerda tener paciencia contigo mientras continúas cuidándote.",
+          "kind": "traducción"
+        }
+      ]
+    },
+    {
+      "tag": "pandora-useful",
+      "label": "Valorar una conversación",
+      "patterns": [
+        {
+          "sourceIndex": 0,
+          "text": "Gracias otra vez por tu consejo. Daré prioridad a la meditación y a lo que puedo cambiar"
+        }
+      ],
+      "responses": [
+        {
+          "sourceIndex": 0,
+          "text": "Me alegra que te haya resultado útil. ¿Hay algo más en lo que pueda ayudarte?",
+          "kind": "traducción"
+        }
+      ]
+    },
+    {
+      "tag": "user-advice",
+      "label": "Pedir orientación",
+      "patterns": [
+        {
+          "sourceIndex": 0,
+          "text": "Quiero un consejo"
+        }
+      ],
+      "responses": [
+        {
+          "sourceIndex": 0,
+          "text": "Claro. ¿Qué puedo hacer para ayudar?",
+          "kind": "traducción"
+        }
+      ]
+    },
+    {
+      "tag": "learn-mental-health",
+      "label": "Aprender sobre bienestar",
+      "patterns": [
+        {
+          "sourceIndex": 0,
+          "text": "Quiero aprender sobre salud mental"
+        }
+      ],
+      "responses": [
+        {
+          "sourceIndex": 0,
+          "text": "Eso está muy bien. Estaría dispuesto a responder lo que sepa sobre el tema.",
+          "kind": "traducción"
+        }
+      ]
+    },
+    {
+      "tag": "mental-health-fact",
+      "label": "Dato citado por el archivo",
+      "patterns": [
+        {
+          "sourceIndex": 0,
+          "text": "Cuéntame un dato sobre salud mental"
+        }
+      ],
+      "responses": [
+        {
+          "sourceIndex": 0,
+          "text": "Según un informe de UNICEF, uno de cada siete habitantes de la India de entre 15 y 24 años se siente deprimido.",
+          "kind": "traducción"
+        }
+      ]
+    },
+    {
+      "tag": "fact-1",
+      "label": "Concepto de salud mental",
+      "patterns": [
+        {
+          "sourceIndex": 0,
+          "text": "¿Qué es la salud mental?"
+        }
+      ],
+      "responses": [
+        {
+          "sourceIndex": 0,
+          "text": "La salud mental es un estado de bienestar en el que una persona reconoce sus propias capacidades, puede afrontar las tensiones normales de la vida, trabajar de forma productiva y contribuir a su comunidad.",
+          "kind": "traducción"
+        }
+      ]
+    },
+    {
+      "tag": "fact-2",
+      "label": "Importancia del bienestar",
+      "patterns": [
+        {
+          "sourceIndex": 0,
+          "text": "¿Por qué es importante la salud mental?"
+        }
+      ],
+      "responses": [
+        {
+          "sourceIndex": 0,
+          "text": "Mantener la salud mental es fundamental para estabilizar conductas, emociones y pensamientos constructivos. Cuidarla puede aumentar la productividad, mejorar la imagen que tenemos de nosotros mismos y mejorar nuestras relaciones.",
+          "kind": "traducción"
+        }
+      ]
+    },
+    {
+      "tag": "fact-3",
+      "label": "Concepto de depresión",
+      "patterns": [
+        {
+          "sourceIndex": 0,
+          "text": "¿Qué es la depresión?"
+        }
+      ],
+      "responses": [
+        {
+          "sourceIndex": 0,
+          "text": "Un trastorno de salud mental caracterizado por un estado de ánimo deprimido persistente o por la pérdida de interés en las actividades, que causa dificultades significativas en la vida diaria.",
+          "kind": "traducción"
+        }
+      ]
+    },
+    {
+      "tag": "fact-5",
+      "label": "Dudas sobre síntomas",
+      "patterns": [
+        {
+          "sourceIndex": 0,
+          "text": "¿Cómo sé si tengo depresión?"
+        }
+      ],
+      "responses": [
+        {
+          "sourceIndex": 0,
+          "text": "El texto original menciona ánimo bajo o pérdida de interés durante al menos dos semanas y sentimientos persistentes de tristeza, desesperanza o irritabilidad. Esta descripción del archivo no permite realizar un diagnóstico.",
+          "kind": "resumen adaptado"
+        }
+      ]
+    },
+    {
+      "tag": "fact-6",
+      "label": "Qué es un terapeuta",
+      "patterns": [
+        {
+          "sourceIndex": 0,
+          "text": "¿Qué es un terapeuta?"
+        }
+      ],
+      "responses": [
+        {
+          "sourceIndex": 0,
+          "text": "El archivo usa «terapeuta» como una denominación amplia para profesionales formados para ofrecer tratamiento y rehabilitación, y señala que puede abarcar distintos servicios y profesiones.",
+          "kind": "resumen adaptado"
+        }
+      ]
+    },
+    {
+      "tag": "fact-7",
+      "label": "Concepto de terapia",
+      "patterns": [
+        {
+          "sourceIndex": 0,
+          "text": "¿Qué es la terapia?"
+        }
+      ],
+      "responses": [
+        {
+          "sourceIndex": 0,
+          "text": "La terapia es una forma de tratamiento que busca ayudar a resolver dificultades mentales o emocionales.",
+          "kind": "traducción"
+        }
+      ]
+    },
+    {
+      "tag": "fact-8",
+      "label": "Qué significa una enfermedad mental",
+      "patterns": [
+        {
+          "sourceIndex": 0,
+          "text": "¿Qué significa tener una enfermedad mental?"
+        }
+      ],
+      "responses": [
+        {
+          "sourceIndex": 0,
+          "text": "El archivo describe condiciones que afectan pensamientos, emociones, relaciones y funcionamiento diario, con distintos grados de gravedad. Señala que no dependen del carácter, la inteligencia o la fuerza de voluntad, y que pueden tratarse.",
+          "kind": "resumen adaptado"
+        }
+      ]
+    },
+    {
+      "tag": "fact-9",
+      "label": "A quién puede afectar",
+      "patterns": [
+        {
+          "sourceIndex": 0,
+          "text": "¿A quién afectan las enfermedades mentales?"
+        }
+      ],
+      "responses": [
+        {
+          "sourceIndex": 0,
+          "text": "El texto explica que pueden afectar a cualquier persona, independientemente de su edad, género, ingresos u origen, y destaca la importancia de reconocer cambios de comportamiento y buscar atención.",
+          "kind": "resumen adaptado"
+        }
+      ]
+    },
+    {
+      "tag": "fact-10",
+      "label": "Causas: limitación del archivo",
+      "patterns": [
+        {
+          "sourceIndex": 0,
+          "text": "¿Qué causa una enfermedad mental?"
+        }
+      ],
+      "responses": [
+        {
+          "sourceIndex": 0,
+          "text": "La respuesta original repite la información de «¿A quién afectan las enfermedades mentales?» y no explica sus causas. Describe que pueden afectar a cualquier persona. Para el tema de causas, consulta también fact-27.",
+          "kind": "resumen adaptado"
+        }
+      ]
+    },
+    {
+      "tag": "fact-11",
+      "label": "Señales descritas en el archivo",
+      "patterns": [
+        {
+          "sourceIndex": 0,
+          "text": "¿Cuáles son algunas señales de alerta de una enfermedad mental?"
+        }
+      ],
+      "responses": [
+        {
+          "sourceIndex": 0,
+          "text": "El texto enumera cambios persistentes en el estado de ánimo, sueño, alimentación, relaciones y capacidad de afrontar actividades cotidianas, y distingue señales según la edad. Es una lista general, no una herramienta diagnóstica.",
+          "kind": "resumen adaptado"
+        }
+      ]
+    },
+    {
+      "tag": "fact-12",
+      "label": "Recuperación",
+      "patterns": [
+        {
+          "sourceIndex": 0,
+          "text": "¿Pueden recuperarse las personas con una enfermedad mental?"
+        }
+      ],
+      "responses": [
+        {
+          "sourceIndex": 0,
+          "text": "El texto destaca la identificación y el tratamiento tempranos, la participación de la persona en su recuperación y el seguimiento, incluso cuando reaparecen síntomas.",
+          "kind": "resumen adaptado"
+        }
+      ]
+    },
+    {
+      "tag": "fact-13",
+      "label": "Acompañar a otra persona",
+      "patterns": [
+        {
+          "sourceIndex": 0,
+          "text": "¿Qué hago si alguien parece tener síntomas de un trastorno mental?"
+        }
+      ],
+      "responses": [
+        {
+          "sourceIndex": 0,
+          "text": "El archivo propone expresar interés y apoyo, conversar con personas de confianza y buscar orientación de un profesional de salud mental. Aclara que el asistente original no sustituye el consejo profesional.",
+          "kind": "resumen adaptado"
+        }
+      ]
+    },
+    {
+      "tag": "fact-14",
+      "label": "Encontrar un profesional",
+      "patterns": [
+        {
+          "sourceIndex": 0,
+          "text": "¿Cómo encuentro un profesional de salud mental para mí o para mi hijo?"
+        }
+      ],
+      "responses": [
+        {
+          "sourceIndex": 0,
+          "text": "Sentirse cómodo con el profesional con quien tú o tu hijo trabajan es fundamental para el éxito del tratamiento. Encontrar a quien mejor se adapte a sus necesidades puede requerir investigación. Empieza buscando proveedores en tu zona.",
+          "kind": "traducción"
+        }
+      ]
+    },
+    {
+      "tag": "fact-15",
+      "label": "Opciones de tratamiento",
+      "patterns": [
+        {
+          "sourceIndex": 0,
+          "text": "¿Qué opciones de tratamiento existen?"
+        }
+      ],
+      "responses": [
+        {
+          "sourceIndex": 0,
+          "text": "Así como hay distintos medicamentos para las enfermedades físicas, existen distintas opciones de tratamiento para las enfermedades mentales. El tratamiento funciona de manera diferente para cada persona. Es importante encontrar lo que mejor funcione para ti o para tu hijo.",
+          "kind": "traducción"
+        }
+      ]
+    },
+    {
+      "tag": "fact-16",
+      "label": "Preguntas durante un tratamiento",
+      "patterns": [
+        {
+          "sourceIndex": 0,
+          "text": "Si empiezo un tratamiento, ¿qué necesito saber?"
+        }
+      ],
+      "responses": [
+        {
+          "sourceIndex": 0,
+          "text": "El original propone participar en el proceso y preguntar al profesional sobre diagnóstico, evaluaciones, alternativas, coordinación de especialistas, participación de la familia, medicamentos y seguimiento.",
+          "kind": "resumen adaptado"
+        }
+      ]
+    },
+    {
+      "tag": "fact-17",
+      "label": "Diferencias entre profesionales",
+      "patterns": [
+        {
+          "sourceIndex": 0,
+          "text": "¿Qué diferencias hay entre los profesionales de salud mental?"
+        }
+      ],
+      "responses": [
+        {
+          "sourceIndex": 0,
+          "text": "Hay muchos tipos de profesionales de salud mental. La variedad de proveedores y servicios puede resultar confusa. Tienen distintos niveles de educación, formación y áreas de especialización. Encontrar al profesional que mejor se adapte a tus necesidades puede requerir investigación.",
+          "kind": "traducción"
+        }
+      ]
+    },
+    {
+      "tag": "fact-18",
+      "label": "Elegir un profesional",
+      "patterns": [
+        {
+          "sourceIndex": 0,
+          "text": "¿Cómo encuentro un profesional de salud mental adecuado para mí o para mi hijo?"
+        }
+      ],
+      "responses": [
+        {
+          "sourceIndex": 0,
+          "text": "Sentirte cómodo con el profesional con quien tú o tu hijo trabajan es fundamental para el éxito del tratamiento. Encontrar a quien mejor se adapte a tus necesidades puede requerir investigación.",
+          "kind": "traducción"
+        }
+      ]
+    },
+    {
+      "tag": "fact-19",
+      "label": "Otras fuentes de apoyo",
+      "patterns": [
+        {
+          "sourceIndex": 0,
+          "text": "¿Dónde más puedo conseguir ayuda?"
+        }
+      ],
+      "responses": [
+        {
+          "sourceIndex": 0,
+          "text": "El texto menciona personas de confianza, profesionales, recursos locales y grupos de apoyo como posibles puntos de partida, según las necesidades de cada persona.",
+          "kind": "resumen adaptado"
+        }
+      ]
+    },
+    {
+      "tag": "fact-20",
+      "label": "Preguntar sobre medicamentos",
+      "patterns": [
+        {
+          "sourceIndex": 0,
+          "text": "¿Qué debo saber antes de empezar un medicamento nuevo?"
+        }
+      ],
+      "responses": [
+        {
+          "sourceIndex": 0,
+          "text": "El archivo remite al médico que lo receta y propone preguntar por su finalidad, forma de uso, interacciones, efectos secundarios, dosis olvidadas y seguimiento. No ofrece una pauta personalizada de medicación.",
+          "kind": "resumen adaptado"
+        }
+      ]
+    },
+    {
+      "tag": "fact-21",
+      "label": "Buscar terapia",
+      "patterns": [
+        {
+          "sourceIndex": 0,
+          "text": "¿Dónde puedo encontrar terapia?"
+        }
+      ],
+      "responses": [
+        {
+          "sourceIndex": 0,
+          "text": "Distintos tipos de terapia pueden ser más eficaces según la naturaleza de la condición de salud mental, los síntomas y la persona; por ejemplo, los niños pueden beneficiarse de un terapeuta especializado en salud mental infantil. Existen distintos tratamientos y terapias que pueden ayudar.",
+          "kind": "traducción"
+        }
+      ]
+    },
+    {
+      "tag": "fact-22",
+      "label": "Tipos de tratamiento",
+      "patterns": [
+        {
+          "sourceIndex": 0,
+          "text": "¿Dónde puedo aprender sobre los tipos de tratamiento de salud mental?"
+        }
+      ],
+      "responses": [
+        {
+          "sourceIndex": 0,
+          "text": "El texto menciona medicación, terapia, autoayuda y apoyo entre pares. Señala que las opciones son personales y deben conversarse con el equipo que atiende a la persona.",
+          "kind": "resumen adaptado"
+        }
+      ]
+    },
+    {
+      "tag": "fact-23",
+      "label": "Tipos de profesionales",
+      "patterns": [
+        {
+          "sourceIndex": 0,
+          "text": "¿Cuáles son los distintos tipos de profesionales de salud mental?"
+        }
+      ],
+      "responses": [
+        {
+          "sourceIndex": 0,
+          "text": "Existen muchos tipos de profesionales de salud mental. Encontrar al adecuado para ti puede requerir investigación.",
+          "kind": "traducción"
+        }
+      ]
+    },
+    {
+      "tag": "fact-24",
+      "label": "Grupos de apoyo",
+      "patterns": [
+        {
+          "sourceIndex": 0,
+          "text": "¿Dónde puedo encontrar un grupo de apoyo?"
+        }
+      ],
+      "responses": [
+        {
+          "sourceIndex": 0,
+          "text": "Muchas personas encuentran útil el apoyo entre pares durante la recuperación. Distintas organizaciones ofrecen grupos para las personas afectadas, familiares y amigos. Algunos son coordinados por pares y otros por profesionales de salud mental.",
+          "kind": "traducción"
+        }
+      ]
+    },
+    {
+      "tag": "fact-25",
+      "label": "Prevención",
+      "patterns": [
+        {
+          "sourceIndex": 0,
+          "text": "¿Se pueden prevenir los problemas de salud mental?"
+        }
+      ],
+      "responses": [
+        {
+          "sourceIndex": 0,
+          "text": "Todos podemos afrontar dificultades de salud mental, pero fortalecer el bienestar y la resiliencia, y buscar ayuda temprano, puede evitar que esas dificultades se agraven.",
+          "kind": "traducción"
+        }
+      ]
+    },
+    {
+      "tag": "fact-26",
+      "label": "Qué puede ayudar",
+      "patterns": [
+        {
+          "sourceIndex": 0,
+          "text": "¿Existen curas para los problemas de salud mental?"
+        }
+      ],
+      "responses": [
+        {
+          "sourceIndex": 0,
+          "text": "A menudo resulta más realista y útil identificar qué ayuda con las dificultades que enfrentas. Hablar, la orientación profesional, los medicamentos, las amistades, el ejercicio, dormir y alimentarse bien y una ocupación significativa pueden ayudar.",
+          "kind": "traducción"
+        }
+      ]
+    },
+    {
+      "tag": "fact-27",
+      "label": "Factores relacionados",
+      "patterns": [
+        {
+          "sourceIndex": 0,
+          "text": "¿Qué causa los problemas de salud mental?"
+        }
+      ],
+      "responses": [
+        {
+          "sourceIndex": 0,
+          "text": "Las dificultades o los problemas de salud mental pueden surgir de factores psicológicos, biológicos y sociales, así como de acontecimientos de la vida.",
+          "kind": "traducción"
+        }
+      ]
+    },
+    {
+      "tag": "fact-28",
+      "label": "Preocupación por el bienestar",
+      "patterns": [
+        {
+          "sourceIndex": 0,
+          "text": "¿Qué hago si me preocupa mi salud mental?"
+        }
+      ],
+      "responses": [
+        {
+          "sourceIndex": 0,
+          "text": "Lo más importante es hablar con alguien de confianza: un amigo, compañero, familiar o médico de cabecera. Además, puede ser útil conocer más sobre lo que estás viviendo. Esto puede ayudarte a tomar perspectiva y ser el comienzo de la búsqueda de ayuda.",
+          "kind": "traducción"
+        }
+      ]
+    },
+    {
+      "tag": "fact-29",
+      "label": "Reconocer dificultades",
+      "patterns": [
+        {
+          "sourceIndex": 0,
+          "text": "¿Cómo sé si no me encuentro bien?"
+        }
+      ],
+      "responses": [
+        {
+          "sourceIndex": 0,
+          "text": "Si tus creencias, pensamientos, sentimientos o conductas afectan significativamente tu capacidad para desenvolverte en la vida cotidiana, sería importante buscar ayuda.",
+          "kind": "traducción"
+        }
+      ]
+    },
+    {
+      "tag": "fact-30",
+      "label": "Conexiones sociales",
+      "patterns": [
+        {
+          "sourceIndex": 0,
+          "text": "¿Cómo mantengo mis conexiones sociales? ¿Qué hago si me siento solo?"
+        }
+      ],
+      "responses": [
+        {
+          "sourceIndex": 0,
+          "text": "El archivo propone elegir formas de contacto que resulten significativas, acordar momentos para conversar, mantener contacto con personas que no están en línea y buscar grupos de apoyo. Destaca la calidad de las conexiones, más que la actividad pasiva en redes sociales.",
+          "kind": "resumen adaptado"
+        }
+      ]
+    },
+    {
+      "tag": "fact-31",
+      "label": "Estrés y ansiedad",
+      "patterns": [
+        {
+          "sourceIndex": 0,
+          "text": "¿Cuál es la diferencia entre la ansiedad y el estrés?"
+        }
+      ],
+      "responses": [
+        {
+          "sourceIndex": 0,
+          "text": "El texto describe que el estrés suele relacionarse con presiones externas identificables, mientras que la ansiedad puede centrarse en temores o preocupaciones cuyo origen no siempre es claro. Señala que ambos pueden afectar el bienestar si persisten o interfieren en la vida diaria.",
+          "kind": "resumen adaptado"
+        }
+      ]
+    },
+    {
+      "tag": "fact-32",
+      "label": "Tristeza y depresión",
+      "patterns": [
+        {
+          "sourceIndex": 0,
+          "text": "¿Cuál es la diferencia entre la tristeza y la depresión?"
+        }
+      ],
+      "responses": [
+        {
+          "sourceIndex": 0,
+          "text": "El archivo distingue la tristeza como reacción a situaciones difíciles de una depresión persistente que puede afectar interés, ánimo, sueño, energía y vida cotidiana. Recomienda buscar ayuda si existe preocupación. Este resumen no sirve para autodiagnosticarse.",
+          "kind": "resumen adaptado"
+        }
+      ]
+    }
+  ]
+}
