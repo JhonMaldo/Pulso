@@ -1,0 +1,38 @@
+{
+  "aviso": "Frases en español agregadas por el equipo SOLO para buscar dentro de KB_limpio.json. No agregan respuestas: la respuesta siempre sale del dataset y de sus traducciones (src/data/KB_es.json).",
+  "frases": {
+    "problem": [
+      "Estoy nervioso por mi entrevista de trabajo",
+      "Tengo una entrevista de trabajo mañana y estoy nerviosa",
+      "Me preocupa la entrevista con el reclutador",
+      "No encuentro trabajo después de graduarme",
+      "Me rechazaron otra vez de una vacante",
+      "Me siguen rechazando en las solicitudes de empleo",
+      "Me despidieron y no sé si encontraré otro empleo",
+      "No sé qué carrera o camino profesional elegir",
+      "Me frustra no avanzar en mi carrera",
+      "Tengo problemas con un compañero de trabajo",
+      "No me dieron el ascenso que esperaba",
+      "Recibí comentarios negativos sobre mi desempeño",
+      "Me preocupa no poder pagar la renta sin trabajo"
+    ],
+    "anxious": [
+      "Me da ansiedad buscar empleo",
+      "Me pongo muy ansioso antes de una entrevista"
+    ],
+    "stressed": [
+      "La búsqueda de empleo me tiene muy estresado",
+      "Estoy agotado de mandar currículums"
+    ],
+    "worthless": [
+      "Siento que no sirvo para ningún trabajo",
+      "Siento que nadie me va a contratar"
+    ],
+    "scared": [
+      "Tengo miedo de no encontrar trabajo"
+    ],
+    "sleep": [
+      "No puedo dormir pensando en la entrevista"
+    ]
+  }
+}
