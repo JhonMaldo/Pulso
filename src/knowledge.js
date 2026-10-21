@@ -1,4 +1,4 @@
-import { normalize } from './model.js';
+import { normalize } from './logic.js';
 
 // Source indexes are resolved against the actual KB: translations never create new intents.
 export function buildKnowledge(source, spanish) {
