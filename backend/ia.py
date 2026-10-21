@@ -20,7 +20,8 @@ from motor import afinidad
 
 OLLAMA_URL = os.getenv("OLLAMA_URL", "http://localhost:11434").rstrip("/")
 OLLAMA_MODELO = os.getenv("OLLAMA_MODELO", "granite4.2:3b")
-OLLAMA_TIMEOUT = float(os.getenv("OLLAMA_TIMEOUT", "120"))
+OLLAMA_TIMEOUT = float(os.getenv("OLLAMA_TIMEOUT", "180"))
+OLLAMA_KEEP_ALIVE = os.getenv("OLLAMA_KEEP_ALIVE", "60m")  # el modelo sigue cargado entre explicaciones
 MAX_TOOLS = 3
 MAX_MEMORIA = 256
 
@@ -31,10 +32,10 @@ NOMBRES = {
     "A7": "Atención al detalle", "A8": "Servicio al cliente",
 }
 
-SISTEMA = """Eres un orientador laboral. Para explicar una recomendación SIEMPRE llama primero a las herramientas calcular_afinidad y obtener_vacante con el id de la vacante que te piden.
+SISTEMA = """Eres un orientador laboral. Para explicar una recomendación SIEMPRE llama primero a la herramienta calcular_afinidad con el id de la vacante que te piden (obtener_vacante es opcional, solo si necesitas la descripción).
 Usa SOLO los datos que devuelven las herramientas. No inventes datos y no cambies los números: el único porcentaje que puedes escribir es la afinidad que devuelve calcular_afinidad.
 No menciones edad, género ni datos personales.
-Responde en español, en 3 o 4 oraciones sencillas: por qué encaja la vacante y qué puede mejorar la persona."""
+Responde en español, en 2 o 3 oraciones sencillas: por qué encaja la vacante y qué puede mejorar la persona."""
 
 TOOLS = [
     {"type": "function", "function": {
@@ -89,7 +90,7 @@ def _ejecutar_tool(nombre, argumentos, vacante, perfil):
         return {"error": f"Solo puedes consultar la vacante {vacante['id']}"}
     if nombre == "calcular_afinidad":
         puntaje, fortalezas, brechas = afinidad(perfil, vacante)
-        return {"vacante_id": vid, "afinidad": puntaje,
+        return {"vacante_id": vid, "titulo": vacante["titulo"], "area": vacante["area"], "afinidad": puntaje,
                 "fortalezas": _nombrar(fortalezas), "brechas": _nombrar(brechas)}
     if nombre == "obtener_vacante":
         return {k: vacante[k] for k in ("id", "titulo", "area", "modalidad", "descripcion", "habilidades_clave")}
@@ -107,7 +108,8 @@ def _con_ollama(vacante, perfil, puntaje, cliente):
         if restante <= 0:
             raise TimeoutError("Ollama superó el límite de espera")
         cuerpo = {"model": OLLAMA_MODELO, "messages": mensajes, "stream": False,
-                  "think": False, "options": {"temperature": 0.3}}
+                  "think": False, "keep_alive": OLLAMA_KEEP_ALIVE,
+                  "options": {"temperature": 0.3, "num_predict": 160}}
         if len(usadas) < MAX_TOOLS:
             cuerpo["tools"] = TOOLS  # al llegar al máximo se pide la respuesta final sin tools
         r = cliente.post(f"{OLLAMA_URL}/api/chat", json=cuerpo, timeout=restante)

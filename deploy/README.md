@@ -6,9 +6,11 @@ Reemplaza en todos los pasos:
 
 | Marcador | De dónde sale |
 |---|---|
-| `IP_VPN_DE_LA_VM` | En la VM: `tailscale ip -4` (según el reporte del servidor podría ser `alonso` `100.64.0.1`, por confirmar) |
-| `TU_SUBDOMINIO` | El subdominio de DuckDNS del Entregable 1 |
-| `USUARIO_VM` | En la VM: `whoami` |
+| `IP_VPN_DE_LA_VM` | **`100.64.0.1`** (VM VirtualBox `ubuntu`, nodo `alonso`; confirmado con `tailscale ip -4` el 21 oct) |
+| `TU_SUBDOMINIO` | **`mentalhealth-app`** (`mentalhealth-app.duckdns.org`, certificado válido hasta el 14 ene 2027) |
+| `USUARIO_VM` | **`alonso`** |
+
+Datos de la VM confirmados el 21 oct: Ubuntu 26.04 LTS, Python 3.14.4, sin Node (compilar `dist/` en otra PC y copiarlo), Ollama 0.33.2 en Docker con `granite4.2:3b` y `tinyllama`. El usuario `alonso` no está en el grupo `docker` (usar `sudo`). **Ollama escucha en `0.0.0.0:11434`**: correr `vm_ollama_localhost.sh`.
 
 Ningún paso imprime llaves, tokens ni contraseñas. El `.env` real no se sube a git.
 
