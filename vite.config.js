@@ -1,13 +1,8 @@
 import { defineConfig } from 'vite';
 
+// En desarrollo, /api se manda al backend local (uvicorn en el puerto 8000).
 export default defineConfig({
-  build: {
-    rollupOptions: {
-      output: {
-        manualChunks(id) {
-          if (id.endsWith('/KB_limpio.json')) return 'knowledge-base';
-        },
-      },
-    },
+  server: {
+    proxy: { '/api': 'http://127.0.0.1:8000' },
   },
 });
