@@ -14,6 +14,9 @@ ufw allow 80/tcp            # HTTP (redirección y renovación de Certbot)
 ufw allow 443/tcp           # HTTPS (Pulso)
 ufw allow 8080/tcp          # Headscale: sin esto se cae la VPN
 ufw allow in on tailscale0  # tráfico dentro de la VPN
+ufw allow 51820/udp         # WireGuard wg0: en este equipo la VPN de Headscale viaja por wg0 (10.0.0.x)
+ufw allow in on wg0
+ufw allow 41641/udp         # Tailscale en directo
 ufw default deny incoming
 ufw default allow outgoing
 ufw --force enable
