@@ -70,12 +70,19 @@ def plantilla(vacante, puntaje, fortalezas, brechas):
     return texto
 
 
-def porcentajes_correctos(texto, puntaje):
-    """True si todos los porcentajes del texto son el puntaje del motor."""
-    for m in _PORCENTAJE.findall(texto):
-        if float(m.replace(",", ".")) != puntaje:
-            return False
-    return True
+def porcentajes_correctos(texto, permitidos):
+    """True si cada porcentaje del texto es un número que devolvió el motor (afinidad, perfil o mínimo)."""
+    if isinstance(permitidos, (int, float)):
+        permitidos = {permitidos}
+    return all(float(m.replace(",", ".")) in permitidos for m in _PORCENTAJE.findall(texto))
+
+
+def _numeros_del_motor(vacante, perfil, puntaje):
+    """Los únicos números que la tool calcular_afinidad entrega al modelo."""
+    numeros = {puntaje}
+    for apt, req in vacante["requisitos"].items():
+        numeros |= {req["minimo"], perfil.get(apt, 0)}
+    return numeros
 
 
 def _ejecutar_tool(nombre, argumentos, vacante, perfil):
@@ -102,7 +109,7 @@ def _con_ollama(vacante, perfil, puntaje, cliente):
     limite = time.monotonic() + OLLAMA_TIMEOUT
     mensajes = [{"role": "system", "content": SISTEMA},
                 {"role": "user", "content": f"Explícame por qué me recomiendan la vacante {vacante['id']} y qué puedo mejorar."}]
-    usadas, afinidad_consultada = [], False
+    usadas, afinidad_consultada, recordado = [], False, False
     while True:
         restante = limite - time.monotonic()
         if restante <= 0:
@@ -118,9 +125,16 @@ def _con_ollama(vacante, perfil, puntaje, cliente):
         llamadas = mensaje.get("tool_calls") or []
         if not llamadas:
             texto = re.sub(r"<think>.*?</think>", "", mensaje.get("content") or "", flags=re.S).strip()
+            if not afinidad_consultada and not recordado and len(usadas) < MAX_TOOLS:
+                # Los modelos pequeños a veces describen su plan en vez de llamar a la tool:
+                # se les recuerda una sola vez. La llamada la sigue haciendo el modelo.
+                recordado = True
+                mensajes += [{"role": "assistant", "content": texto},
+                             {"role": "user", "content": f"Llama ahora a la herramienta calcular_afinidad con vacante_id {vacante['id']}. No respondas sin ese dato."}]
+                continue
             if not texto or not afinidad_consultada:
                 raise ValueError("El modelo respondió sin consultar el motor")
-            if not porcentajes_correctos(texto, puntaje):
+            if not porcentajes_correctos(texto, _numeros_del_motor(vacante, perfil, puntaje)):
                 raise ValueError("El modelo escribió un porcentaje distinto al del motor")
             return texto, usadas
         mensajes.append(mensaje)

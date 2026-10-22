@@ -141,8 +141,21 @@ def test_porcentaje_equivocado_usa_plantilla():
 
 def test_respuesta_sin_consultar_el_motor_usa_plantilla():
     ia._memoria.clear()
-    r = ia.explicar(VACANTE, PERFIL, cliente=ollama_simulado([{"role": "assistant", "content": "Encajas bien."}], []))
+    peticiones = []
+    sin_tool = {"role": "assistant", "content": "Encajas bien."}
+    r = ia.explicar(VACANTE, PERFIL, cliente=ollama_simulado([sin_tool, sin_tool], peticiones))
     assert r["fuente"] == "plantilla"
+    assert len(peticiones) == 2  # un solo recordatorio
+    assert "calcular_afinidad" in peticiones[1]["messages"][-1]["content"]
+
+
+def test_recordatorio_lleva_al_modelo_a_usar_la_tool():
+    ia._memoria.clear()
+    puntaje = ia.afinidad(PERFIL, VACANTE)[0]
+    plan = {"role": "assistant", "content": "Primero calcularé la afinidad y luego te explico."}
+    final = {"role": "assistant", "content": f"Tu afinidad es de {puntaje} %, con 75 % en razonamiento lógico."}
+    r = ia.explicar(VACANTE, PERFIL, cliente=ollama_simulado([plan, pide_tool("calcular_afinidad"), final], []))
+    assert r["fuente"] == "ia" and r["herramientas"] == ["calcular_afinidad(V01)"]
 
 
 def test_tool_con_otra_vacante_se_rechaza_y_limita_a_3_llamadas():
@@ -169,3 +182,7 @@ def test_porcentajes_correctos():
     assert ia.porcentajes_correctos("Sin porcentajes", 89)
     assert not ia.porcentajes_correctos("Tienes 89% y antes 75 por ciento", 89)
     assert not ia.porcentajes_correctos("Tienes 89.3%", 89)
+    # Números del motor: afinidad, perfil y mínimos de la vacante; nada más.
+    permitidos = ia._numeros_del_motor(VACANTE, PERFIL, 92)
+    assert ia.porcentajes_correctos("Afinidad 92 %; razonamiento 75 % de 60 % requerido", permitidos)
+    assert not ia.porcentajes_correctos("Afinidad 92 % y 85 % en liderazgo", permitidos)
