@@ -1,5 +1,7 @@
 # Despliegue de Pulso (actividades 5 y 10)
 
+> **Uso diario:** para encender o apagar Pulso en la PC anfitriona basta un doble clic. Ver [windows/GUIA_ENCENDER_APAGAR.md](windows/GUIA_ENCENDER_APAGAR.md).
+
 Arquitectura: celular → `https://TU_SUBDOMINIO.duckdns.org` → NGINX en `nodo0` (`100.64.0.2`) → túnel de Headscale → VM cliente (`IP_VPN_DE_LA_VM:8000`, FastAPI + pantallas) → Ollama en `localhost:11434` dentro de la misma VM.
 
 Reemplaza en todos los pasos:

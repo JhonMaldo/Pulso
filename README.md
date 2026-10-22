@@ -51,6 +51,8 @@ Ollama nunca queda expuesto: ni a Internet ni a la VPN. Solo NGINX y Headscale s
 
 ## Cómo instalar y correr
 
+**Encender y apagar la versión publicada:** doble clic en `deploy/windows/levantar_pulso.bat` o `apagar_pulso.bat`. Guía paso a paso: [deploy/windows/GUIA_ENCENDER_APAGAR.md](deploy/windows/GUIA_ENCENDER_APAGAR.md).
+
 Requisitos: Python 3.11+, Node.js 20.19+ o 22.12+, y Ollama con un modelo que soporte *tools*.
 
 ```bash
