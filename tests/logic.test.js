@@ -56,3 +56,16 @@ test('mensajes de error claros sin conexión, con límite y con detalle de la AP
  assert.equal(mensajeError(422, { detail: 'Faltan respuestas' }), 'Faltan respuestas');
  assert.equal(mensajeError(422, { detail: [{ msg: 'x' }] }), 'No se pudo completar la solicitud.');
 });
+
+test('ayudantes de reportes', async () => {
+ const { etiquetaDia, porcentaje, vacantesRecomendadas, rangoValido } = await import('../src/logic.js');
+ assert.equal(etiquetaDia('2026-10-22'), '22 oct');
+ assert.equal(etiquetaDia('2026-01-05'), '5 ene');
+ assert.equal(porcentaje(3, 4), 75);
+ assert.equal(porcentaje(1, 0), 0);
+ const v = [{ id: 'V01', veces_top5: 3 }, { id: 'V02', veces_top5: 1 }, { id: 'V03', veces_top5: 0 }];
+ assert.deepEqual(vacantesRecomendadas(v).map(x => x.id), ['V01', 'V02']);
+ assert.deepEqual(vacantesRecomendadas(v, 1).map(x => x.id), ['V01']);
+ assert.equal(rangoValido('2026-10-01', '2026-10-30'), '');
+ assert.match(rangoValido('2026-10-30', '2026-10-01'), /posterior/);
+});

@@ -40,3 +40,14 @@ export function mensajeError(status, cuerpo) {
  const d = cuerpo?.detail;
  return typeof d === 'string' ? d : 'No se pudo completar la solicitud.';
 }
+
+// ---------- Reportes ----------
+const MESES = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
+export const etiquetaDia = iso => `${Number(iso.slice(8, 10))} ${MESES[Number(iso.slice(5, 7)) - 1]}`;
+export const porcentaje = (parte, total) => total ? Math.round(parte / total * 100) : 0;
+// Solo las vacantes que sí aparecieron en algún top 5, de más a menos recomendada.
+export const vacantesRecomendadas = (vacantes, n = 10) => vacantes.filter(v => v.veces_top5 > 0).slice(0, n);
+export function rangoValido(desde, hasta) {
+ if (desde && hasta && desde > hasta) return 'La fecha «desde» no puede ser posterior a «hasta».';
+ return '';
+}

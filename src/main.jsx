@@ -5,6 +5,7 @@ import { armarRespuestas } from './logic.js';
 import Prueba from './Prueba.jsx';
 import { Detalle, Resultados } from './Resultados.jsx';
 import Apoyo from './Apoyo.jsx';
+import Reportes from './Reportes.jsx';
 import './styles.css';
 
 const AVISO = 'Esta prueba es una orientación, no una evaluación profesional, y no decide una contratación. Tus respuestas no se asocian con tu nombre.';
@@ -33,14 +34,15 @@ function App() {
   finally { setCargando(false); }
  }
  function reiniciar() { setResultado(null); setDetalle(null); setExplicaciones({}); ir('inicio'); }
- const enEvaluacion = vista !== 'apoyo';
+ const enEvaluacion = vista !== 'apoyo' && vista !== 'reportes';
 
  return <>
   <header><a className="brand" href="#inicio" onClick={reiniciar}>p<span className="brand-symbol">↗</span> pulso<span className="brand-dot">.</span></a><span className="header-note">APTITUDES Y VACANTES</span><span className="local-badge">● Sin registro</span></header>
   <main id="inicio">
    <nav className="tabs main-tabs" aria-label="Secciones">
     <button className={enEvaluacion ? 'active' : ''} aria-current={enEvaluacion ? 'page' : undefined} onClick={() => ir(resultado ? 'resultados' : prueba && vista === 'prueba' ? 'prueba' : 'inicio')}><span>01</span>Evaluación de aptitudes</button>
-    <button className={!enEvaluacion ? 'active' : ''} aria-current={!enEvaluacion ? 'page' : undefined} onClick={() => ir('apoyo')}><span>02</span>Apoyo en la búsqueda de empleo</button>
+    <button className={vista === 'apoyo' ? 'active' : ''} aria-current={vista === 'apoyo' ? 'page' : undefined} onClick={() => ir('apoyo')}><span>02</span>Apoyo en la búsqueda de empleo</button>
+    <button className={vista === 'reportes' ? 'active' : ''} aria-current={vista === 'reportes' ? 'page' : undefined} onClick={() => ir('reportes')}><span>03</span>Reportes</button>
    </nav>
    {error && <p role="alert" className="error">{error}</p>}
 
@@ -61,6 +63,7 @@ function App() {
    {vista === 'resultados' && resultado && <section className="workspace"><div className="workspace-body"><Resultados resultado={resultado} aptitudes={prueba.aptitudes} alias={alias.trim()} onDetalle={r => { setDetalle(r); ir('detalle'); }} onReiniciar={reiniciar}/></div></section>}
    {vista === 'detalle' && detalle && <section className="workspace"><div className="workspace-body"><Detalle rec={detalle} perfil={resultado.perfil} aptitudes={prueba.aptitudes} explicacion={explicaciones[detalle.vacante.id]} onExplicacion={(id, e) => setExplicaciones(x => ({ ...x, [id]: e }))} onVolver={() => ir('resultados')}/></div></section>}
    {vista === 'apoyo' && <section className="workspace"><div className="workspace-body"><Apoyo/></div></section>}
+   {vista === 'reportes' && <section className="workspace"><div className="workspace-body"><Reportes/></div></section>}
 
    <section className="limits"><span className="eyebrow">USO RESPONSABLE</span><h2>Una orientación.<br/><em>El criterio sigue siendo humano.</em></h2><p>{AVISO} No usamos edad, género, estado civil ni origen. La IA no calcula ni cambia puntajes: solo explica lo que calcula el motor. Las vacantes son datos de ejemplo.</p></section>
   </main>
