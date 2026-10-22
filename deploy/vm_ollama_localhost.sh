@@ -6,6 +6,10 @@ set -euo pipefail
 
 if docker ps -a --format '{{.Names}}' | grep -qx ollama; then
   echo "Ollama en Docker. Puertos actuales:"; docker port ollama || true
+  if ! docker inspect ollama --format '{{range .Mounts}}{{.Name}} {{end}}' | grep -qw ollama_data; then
+    echo "ALTO: los modelos no están en el volumen ollama_data; no se recrea el contenedor."
+    docker inspect ollama --format '{{json .Mounts}}'; exit 1
+  fi
   docker stop ollama && docker rm ollama
   docker run -d --name ollama --restart unless-stopped \
     -p 127.0.0.1:11434:11434 -v ollama_data:/root/.ollama ollama/ollama
