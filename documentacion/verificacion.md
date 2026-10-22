@@ -37,3 +37,19 @@ Corrida local del 21 de octubre de 2026, rama `sprint-aptitudes`:
 | Seguridad básica | Ollama en `127.0.0.1`, UFW en la VM, `curl` al 11434 desde fuera | Configurado; **pendiente** de comprobar |
 | Privacidad | Logs de uvicorn en la corrida local | Solo rutas y códigos; ningún texto. `test_no_registra_el_texto_en_logs` pasa; NGINX con `access_log off` en `/api/apoyo` |
 | Módulo de apoyo | `test_apoyo.py`: entrevista, texto sin relación, crisis en español y en inglés, longitud | Pasa |
+
+## Despliegue final (21 de octubre de 2026, noche)
+
+| Comprobación | Resultado |
+|---|---|
+| `https://mentalhealth-app.duckdns.org/api/salud` desde Internet | `{"ok":true}` |
+| `/api/salud/ollama` desde Internet | `{"ok":true,"modelo":"granite4.2:3b"}` |
+| Flujo completo por la URL pública (prueba, 5 vacantes, «¿Por qué?», apoyo) | Funciona; «¿Por qué?» con IA y tools en 30 s |
+| `granite4.2:3b` real en 6 vacantes | 6 de 6 con IA y tool, 17 a 42 s, porcentajes iguales al motor |
+| `nginx -t` en `nodo0` | Correcto; solo el sitio `pulso` activo |
+| UFW en `nodo0` | Activo (22, 80, 443, 8080, `tailscale0`, `wg0`, 51820/udp, 41641/udp); temporizador cancelado |
+| `systemctl status pulso` en la VM | `active (running)`, habilitado al arranque |
+| 11434 y 8000 desde Internet | Sin respuesta |
+| Límite de peticiones | 429 desde la segunda petición seguida a `/api/explicar` |
+
+El reporte con capturas está en el documento compartido «Reporte final: Pulso · IA e infraestructura de red».

@@ -20,31 +20,34 @@ Más detalle en la [idea de negocio](documentacion/idea_de_negocio.md).
 
 ```mermaid
 flowchart LR
-  U["Celular o PC<br/>(Internet)"] -->|"HTTPS 443"| D["DuckDNS<br/>TU_SUBDOMINIO.duckdns.org"]
+  U["Celular o PC<br/>(Internet)"] -->|"HTTPS 443"| D["DuckDNS<br/>mentalhealth-app.duckdns.org"]
   D -->|"resuelve a la IP pública"| N
   subgraph S["nodo0 · servidor en la nube · VPN 100.64.0.2"]
     N["NGINX<br/>proxy inverso HTTPS<br/>Let's Encrypt · limit_req"]
     H["Headscale 0.29.4<br/>:8080"]
   end
-  N ==>|"túnel WireGuard de Tailscale/Headscale<br/>HTTP :8000"| A
+  N ==>|"túnel de Headscale<br/>HTTP :8000"| A
   H -.->|"coordina la VPN"| VM
-  subgraph VM["VM cliente Ubuntu · VPN IP_VPN_DE_LA_VM"]
-    A["FastAPI (uvicorn :8000)<br/>API /api + pantallas React"]
-    M["motor.py<br/>perfil y afinidad"]
-    O["Ollama<br/>127.0.0.1:11434"]
-    K[("KB_limpio.json<br/>preguntas.json · vacantes.json")]
-    A --> M
-    A -->|"/api/chat + tools<br/>solo localhost"| O
-    A --> K
+  subgraph PC["PC anfitriona · Windows 11"]
+    subgraph VM["VM alonso · Ubuntu 26.04 · VPN 100.64.0.1"]
+      A["FastAPI (uvicorn :8000)<br/>API /api + pantallas React"]
+      M["motor.py<br/>perfil y afinidad"]
+      K[("KB_limpio.json<br/>preguntas.json · vacantes.json")]
+      A --> M
+      A --> K
+    end
+    O["Ollama 0.40.8 · granite4.2:3b<br/>127.0.0.1:11434"]
   end
+  A -->|"/api/chat + tools<br/>10.0.2.2 (NAT de VirtualBox)"| O
 ```
 
-| Nodo | IP en la VPN | Qué corre | Puertos abiertos |
+| Equipo | IP | Qué corre | Puertos abiertos |
 |---|---|---|---|
-| `nodo0` (nube) | `100.64.0.2` | NGINX + Certbot, Headscale | 22, 80, 443, 8080 y la interfaz `tailscale0` |
-| VM cliente | `IP_VPN_DE_LA_VM` | FastAPI + pantallas, Ollama | 8000 **solo** desde `tailscale0`; 11434 cerrado (solo `localhost`) |
+| `nodo0` (nube) | VPN `100.64.0.2` | NGINX + Certbot, Headscale | 22, 80, 443, 8080; VPN por `tailscale0`, `wg0`, 51820/udp y 41641/udp |
+| VM `alonso` | VPN `100.64.0.1` | FastAPI + pantallas, motor y datos | 8000 **solo** desde `tailscale0` |
+| PC anfitriona (Windows) | Sin IP pública ni VPN | Ollama con `granite4.2:3b` | Ninguno: Ollama escucha solo en `127.0.0.1` |
 
-Ollama nunca queda expuesto: ni a Internet ni a la VPN. Solo NGINX es público.
+Ollama nunca queda expuesto: ni a Internet ni a la VPN. Solo NGINX y Headscale son públicos. Ollama corre en la PC anfitriona, y no dentro de la VM, porque la PC tiene 7.2 GB de RAM: dentro de la VM una explicación tardaba más de 7 minutos; en la anfitriona tarda de 17 a 42 s.
 
 ## Cómo instalar y correr
 
@@ -72,7 +75,7 @@ Para desarrollar las pantallas con recarga en vivo: deja uvicorn corriendo y en 
 
 | Variable | Por defecto | Para qué |
 |---|---|---|
-| `OLLAMA_URL` | `http://localhost:11434` | Dónde está Ollama (misma VM) |
+| `OLLAMA_URL` | `http://localhost:11434` | Dónde está Ollama; en la VM es `http://10.0.2.2:11434` (la PC anfitriona) |
 | `OLLAMA_MODELO` | `granite4.2:3b` | Modelo que aparece en `ollama list` |
 | `OLLAMA_TIMEOUT` | `120` | Segundos máximos por explicación |
 | `PULSO_DIST` | `../dist` | Carpeta del build de las pantallas |
@@ -188,7 +191,7 @@ Resultados y evidencias en [documentacion/verificacion.md](documentacion/verific
 
 ## Herramientas de desarrollo
 
-El proyecto se desarrolló en **Antigravity** con **Claude Code** en su terminal integrada (generación de código, pruebas y documentación), revisado y ajustado por el equipo. Frontend: React 19 + Vite 6. Backend: FastAPI + httpx. IA: Ollama (`granite4.2:3b`, por confirmar con `ollama list`). Infraestructura: Headscale/Tailscale, NGINX, Certbot y DuckDNS.
+El proyecto se desarrolló en **Antigravity** con **Claude Code** en su terminal integrada (generación de código, pruebas y documentación), revisado y ajustado por el equipo. Frontend: React 19 + Vite 6. Backend: FastAPI + httpx. IA: Ollama 0.40.8 con `granite4.2:3b`. Infraestructura: Headscale/Tailscale, NGINX, Certbot y DuckDNS.
 
 ## Equipo y SCRUM
 
