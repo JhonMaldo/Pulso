@@ -71,6 +71,8 @@ Hazlo antes de apagar la PC o de desconectar el disco `D:`.
 
 Mientras todo esté apagado, la página mostrará 502 o 504. `nodo0` sigue encendido en la nube; no hay que hacer nada ahí.
 
+> La VM está configurada con **1 núcleo y 1.5 GB de RAM**. No la subas a 2 o más núcleos: en esta PC VirtualBox corre encima de Hyper-V y, con 2 núcleos, Linux se quedó sin CPU (mensajes `rcu_preempt ... starved` y `soft lockup`) y la página dio 504. Con 1 núcleo pasó una prueba de 4 explicaciones con IA seguidas sin fallos.
+
 > No uses «Guardar el estado de la máquina» en VirtualBox para apagar la VM. Cuando se reanudó después de dos semanas guardada, la VM se colgó. El script la apaga de forma normal.
 
 ## Si algo falla
@@ -82,6 +84,7 @@ Mientras todo esté apagado, la página mostrará 502 o 504. `nodo0` sigue encen
 | `XX Ollama no responde` | Ollama no pudo arrancar | Abre «Ollama» desde el menú Inicio, espera 10 s y vuelve a correr `levantar_pulso.bat` |
 | `XX La URL no responde` tras 4 minutos | La VM se trabó al arrancar (pasa cuando falta memoria) | Corre `apagar_pulso.bat`, cierra programas y vuelve a correr `levantar_pulso.bat` |
 | `!! Respondió la explicación automática` | La IA tardó más de 3 minutos | La página funciona igual, con la explicación de plantilla. Cierra programas y prueba «¿Por qué?» otra vez |
+| En VirtualBox la VM muestra `rcu_preempt ... starved` o `soft lockup` | La VM se quedó sin CPU (Hyper-V + poca RAM) | Revisa que tenga 1 núcleo (Configuración → Sistema → Procesador), cierra programas y corre `apagar_pulso.bat` y luego `levantar_pulso.bat` |
 | La página muestra 502 o 504 | La VM está apagada o trabada | Corre `levantar_pulso.bat`. Si dice que la VM ya estaba encendida y aun así falla, corre `apagar_pulso.bat` y luego `levantar_pulso.bat` |
 | Windows no deja abrir el `.bat` | Bloqueo de seguridad de archivos descargados | Clic derecho en el archivo → Propiedades → marca «Desbloquear» → Aceptar |
 

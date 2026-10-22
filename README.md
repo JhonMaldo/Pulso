@@ -32,7 +32,7 @@ flowchart LR
     subgraph VM["VM alonso · Ubuntu 26.04 · VPN 100.64.0.1"]
       A["FastAPI (uvicorn :8000)<br/>API /api + pantallas React"]
       M["motor.py<br/>perfil y afinidad"]
-      K[("KB_limpio.json<br/>preguntas.json · vacantes.json")]
+      K[("SQLite pulso.db<br/>catálogo + registro anónimo<br/>KB_limpio.json")]
       A --> M
       A --> K
     end
@@ -44,7 +44,7 @@ flowchart LR
 | Equipo | IP | Qué corre | Puertos abiertos |
 |---|---|---|---|
 | `nodo0` (nube) | VPN `100.64.0.2` | NGINX + Certbot, Headscale | 22, 80, 443, 8080; VPN por `tailscale0`, `wg0`, 51820/udp y 41641/udp |
-| VM `alonso` | VPN `100.64.0.1` | FastAPI + pantallas, motor y datos | 8000 **solo** desde `tailscale0` |
+| VM `alonso` (1 núcleo, 1.5 GB) | VPN `100.64.0.1` | FastAPI + pantallas, motor y SQLite | 8000 **solo** desde `tailscale0` |
 | PC anfitriona (Windows) | Sin IP pública ni VPN | Ollama con `granite4.2:3b` | Ninguno: Ollama escucha solo en `127.0.0.1` |
 
 Ollama nunca queda expuesto: ni a Internet ni a la VPN. Solo NGINX y Headscale son públicos. Ollama corre en la PC anfitriona, y no dentro de la VM, porque la PC tiene 7.2 GB de RAM: dentro de la VM una explicación tardaba más de 7 minutos; en la anfitriona tarda de 17 a 42 s.
@@ -95,8 +95,27 @@ El despliegue completo (VM, systemd, UFW, NGINX) está en [deploy/README.md](dep
 | `POST /api/explicar` | `{"vacante_id": "V01", "perfil": {...}}` | `{"texto", "fuente": "ia" \| "plantilla", "herramientas"}` |
 | `GET /api/vacantes` | — | Catálogo de 20 vacantes |
 | `POST /api/apoyo` | `{"texto": "..."}` (máx. 500) | `{"tag", "respuesta", "similitud", "crisis"}` |
+| `GET /api/reportes/resumen` | `?desde=AAAA-MM-DD&hasta=AAAA-MM-DD` (opcional) | Totales, promedio por aptitud, evaluaciones por día, vacantes más recomendadas, uso de la IA |
+| `GET /api/reportes/evaluaciones.csv` | Mismo filtro | Una fila anónima por evaluación |
 
 Validaciones: escala de 1 a 5, opción dentro del rango, todas las respuestas, perfil de 0 a 100, campos extra rechazados (no se aceptan datos personales). Los errores son `422`/`404` con un mensaje en español y el servicio no se cae. Documentación interactiva en `/api/docs`.
+
+## Base de datos (SQLite) y reportes
+
+Pulso usa **SQLite** (`backend/datos/pulso.db`, módulo `backend/db.py`): un solo archivo, sin servidor encendido, incluido en Python. Al arrancar, la API crea las tablas, copia el catálogo desde `preguntas.json` y `vacantes.json` (los archivos que editan los roles 2 y 3) y desde ahí lee aptitudes, preguntas y vacantes.
+
+| Tabla | Qué guarda |
+|---|---|
+| `aptitudes`, `preguntas` | Las 8 aptitudes y las 24 preguntas (opciones y respuesta correcta en el servidor) |
+| `vacantes`, `requisitos` | Las 20 vacantes y su mínimo y peso por aptitud |
+| `evaluaciones` | Una fila por prueba terminada: **solo el día** (hora de México) |
+| `evaluacion_aptitudes` | El puntaje de 0 a 100 de cada aptitud de esa evaluación |
+| `evaluacion_recomendaciones` | Las 5 vacantes recomendadas, su posición y afinidad |
+| `explicaciones` | Cada «¿Por qué?»: vacante, fuente (`ia` o `plantilla`) y segundos |
+
+**Privacidad:** no se guarda el alias, las respuestas individuales, la IP ni nada del módulo de apoyo; ninguna tabla tiene columnas para eso (lo comprueba `backend/tests/test_db.py`).
+
+**Reportes:** la pestaña «Reportes» muestra evaluaciones, porcentaje de explicaciones con IA, tiempo promedio de la IA, vacante más recomendada, promedio por aptitud, evaluaciones por día y la tabla de vacantes, con filtro de fechas y descarga en CSV. Para pedir una clave, define `REPORTES_CLAVE` en `backend/.env`; sin ella, los reportes están abiertos porque solo muestran datos anónimos y agregados.
 
 ## El motor de afinidad
 
