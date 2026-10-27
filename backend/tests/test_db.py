@@ -7,13 +7,35 @@ from fastapi.testclient import TestClient
 import db
 import ia
 import main
+from motor import clasificar
 
 cliente = TestClient(main.app)
 DATOS = main.BASE / "datos"
+CLAVE = "clave-de-prueba-jefe"
+JEFE = {"X-Clave-Jefe": CLAVE}
+
+PUESTO = {
+    "titulo": "Recepcionista bilingüe", "empresa": "Hotel de prueba", "area": "Atención y ventas",
+    "modalidad": "Presencial", "descripcion": "Recibe huéspedes, agenda reservaciones y atiende llamadas.",
+    "habilidades_clave": ["Inglés", "Atención telefónica"],
+    "requisitos": {"A8": "clave", "A3": "importante", "A5": "deseable"},
+}
 
 
-def respuestas_completas():
-    return {str(p["id"]): (p["correcta"] if p["tipo"] == "opcion_multiple" else 3) for p in main.PREGUNTAS["preguntas"]}
+@pytest.fixture(autouse=True)
+def sin_ollama(monkeypatch):
+    # Las pruebas nunca llaman al Ollama real (aunque esté encendido en la PC).
+    monkeypatch.setattr(ia, "OLLAMA_URL", "http://127.0.0.1:9")
+
+
+@pytest.fixture
+def jefe(monkeypatch):
+    monkeypatch.setattr(main, "JEFE_CLAVE", CLAVE)
+
+
+def respuestas(om=None, escala=3):
+    return {str(p["id"]): (p["correcta"] if om is None else om) if p["tipo"] == "opcion_multiple" else escala
+            for p in main.PREGUNTAS["preguntas"]}
 
 
 def tablas():
@@ -21,109 +43,189 @@ def tablas():
         return {r[0] for r in con.execute("SELECT name FROM sqlite_master WHERE type = 'table'")}
 
 
-def test_esquema_y_catalogo_igual_a_los_json():
-    assert {"aptitudes", "preguntas", "vacantes", "requisitos", "evaluaciones",
-            "evaluacion_aptitudes", "evaluacion_recomendaciones", "explicaciones"} <= tablas()
+def contar(tabla):
+    with db.conectar() as con:
+        return con.execute(f"SELECT COUNT(*) FROM {tabla}").fetchone()[0]
+
+
+# ---------- Esquema y catálogo ----------
+
+def test_esquema_solo_guarda_resultados():
+    assert {"aptitudes", "preguntas", "vacantes", "requisitos", "resultados"} <= tablas()
+    assert not tablas() & {"evaluaciones", "evaluacion_aptitudes", "evaluacion_recomendaciones", "explicaciones"}
+    with db.conectar() as con:
+        columnas = {r[1] for r in con.execute("PRAGMA table_info(resultados)")}
+    assert columnas == {"id", "fecha", "vacante_id", "afinidad", "brechas", "nivel"}
+
+
+def test_catalogo_igual_a_los_json():
     preguntas_json = json.loads((DATOS / "preguntas.json").read_text(encoding="utf-8"))
     vacantes_json = json.loads((DATOS / "vacantes.json").read_text(encoding="utf-8"))
     desde_db = db.cargar_preguntas()
     assert desde_db["aptitudes"] == preguntas_json["aptitudes"]
     assert desde_db["preguntas"] == preguntas_json["preguntas"]
-    assert db.cargar_vacantes() == vacantes_json["vacantes"]
+    catalogo = [v for v in db.cargar_vacantes(incluir_inactivas=True) if v["id"].startswith("V")]
+    assert catalogo == vacantes_json["vacantes"]
 
 
-def test_la_api_lee_el_catalogo_desde_sqlite():
-    assert main.VACANTES == db.cargar_vacantes()
-    assert len(cliente.get("/api/prueba").json()["preguntas"]) == 24
-
-
-def test_volver_a_inicializar_no_duplica_el_catalogo():
-    vacantes_json = json.loads((DATOS / "vacantes.json").read_text(encoding="utf-8"))
-    db.inicializar(json.loads((DATOS / "preguntas.json").read_text(encoding="utf-8")), vacantes_json)
+def test_migra_una_base_de_la_version_anterior(tmp_path, monkeypatch):
+    vieja = tmp_path / "vieja.db"
+    con = sqlite3.connect(vieja)
+    con.executescript("""
+        CREATE TABLE vacantes (id TEXT PRIMARY KEY, titulo TEXT NOT NULL, empresa TEXT NOT NULL, area TEXT NOT NULL,
+            modalidad TEXT NOT NULL, descripcion TEXT NOT NULL, habilidades_clave TEXT NOT NULL);
+        CREATE TABLE evaluaciones (id INTEGER PRIMARY KEY, fecha TEXT NOT NULL);
+        CREATE TABLE evaluacion_aptitudes (evaluacion_id INTEGER, aptitud_id TEXT, puntaje INTEGER);
+        CREATE TABLE explicaciones (id INTEGER PRIMARY KEY, fecha TEXT);
+        INSERT INTO evaluaciones VALUES (1, '2026-10-21');
+    """)
+    con.close()
+    monkeypatch.setattr(db, "DB_PATH", vieja)
+    db.inicializar(json.loads((DATOS / "preguntas.json").read_text(encoding="utf-8")),
+                   json.loads((DATOS / "vacantes.json").read_text(encoding="utf-8")))
+    assert not tablas() & {"evaluaciones", "evaluacion_aptitudes", "explicaciones"}
+    assert "resultados" in tablas()
+    assert len(db.cargar_vacantes()) == 20
     with db.conectar() as con:
-        assert con.execute("SELECT COUNT(*) FROM preguntas").fetchone()[0] == 24
-        assert con.execute("SELECT COUNT(*) FROM vacantes").fetchone()[0] == 20
-        assert con.execute("SELECT COUNT(*) FROM requisitos").fetchone()[0] == sum(
-            len(v["requisitos"]) for v in vacantes_json["vacantes"])
+        assert con.execute("PRAGMA user_version").fetchone()[0] == db.VERSION_ESQUEMA
 
 
-def test_evaluar_registra_una_evaluacion_anonima():
-    antes = db.resumen()["evaluaciones"]
-    datos = cliente.post("/api/evaluar", json={"respuestas": respuestas_completas()}).json()
+# ---------- Resultados ----------
+
+def test_clasificacion():
+    assert clasificar(100, []) == "preparado"
+    assert clasificar(75, [{"aptitud": "A1"}]) == "reforzar"
+    assert clasificar(92, [{"aptitud": "A1"}]) == "reforzar"
+    assert clasificar(74, [{"aptitud": "A1"}]) == "no_apto"
+
+
+def test_evaluar_guarda_solo_el_resultado():
+    antes = contar("resultados")
+    datos = cliente.post("/api/evaluar", json={"respuestas": respuestas()}).json()
+    mejor = datos["recomendaciones"][0]
     with db.conectar() as con:
-        eid = con.execute("SELECT MAX(id) FROM evaluaciones").fetchone()[0]
-        perfil = dict(con.execute("SELECT aptitud_id, puntaje FROM evaluacion_aptitudes WHERE evaluacion_id = ?", (eid,)).fetchall())
-        recs = con.execute("SELECT posicion, vacante_id, afinidad FROM evaluacion_recomendaciones "
-                           "WHERE evaluacion_id = ? ORDER BY posicion", (eid,)).fetchall()
-        columnas = {r[1] for t in ("evaluaciones", "evaluacion_aptitudes", "evaluacion_recomendaciones")
-                    for r in con.execute(f"PRAGMA table_info({t})")}
-    assert db.resumen()["evaluaciones"] == antes + 1
-    assert perfil == datos["perfil"]
-    assert [(r[1], r[2]) for r in recs] == [(r["vacante"]["id"], r["afinidad"]) for r in datos["recomendaciones"]]
-    assert not columnas & {"alias", "nombre", "respuestas", "ip", "texto"}  # nada que identifique a la persona
+        r = dict(con.execute("SELECT * FROM resultados ORDER BY id DESC LIMIT 1").fetchone())
+    assert contar("resultados") == antes + 1
+    assert (r["vacante_id"], r["afinidad"], r["brechas"]) == (mejor["vacante"]["id"], mejor["afinidad"], len(mejor["brechas"]))
+    assert r["nivel"] == datos["nivel"] == mejor["nivel"] == clasificar(mejor["afinidad"], mejor["brechas"])
+    assert r["fecha"] == db.hoy()
 
 
-def test_evaluacion_invalida_no_se_registra():
-    antes = db.resumen()["evaluaciones"]
+def test_niveles_segun_las_respuestas():
+    todo_bien = cliente.post("/api/evaluar", json={"respuestas": respuestas(escala=5)}).json()
+    assert todo_bien["nivel"] == "preparado"
+    malas = {p["id"]: (p["correcta"] + 1) % 4 for p in main.PREGUNTAS["preguntas"] if p["tipo"] == "opcion_multiple"}
+    todo_mal = {str(p["id"]): malas.get(p["id"], 1 if not p.get("invertida") else 5) for p in main.PREGUNTAS["preguntas"]}
+    assert cliente.post("/api/evaluar", json={"respuestas": todo_mal}).json()["nivel"] == "no_apto"
+
+
+def test_evaluacion_invalida_y_apoyo_no_escriben():
+    antes = contar("resultados")
     cliente.post("/api/evaluar", json={"respuestas": {"1": 9}})
-    assert db.resumen()["evaluaciones"] == antes
-
-
-def test_el_modulo_de_apoyo_no_escribe_en_la_base_de_datos():
-    with db.conectar() as con:
-        antes = [con.execute(f"SELECT COUNT(*) FROM {t}").fetchone()[0] for t in sorted(tablas())]
     cliente.post("/api/apoyo", json={"texto": "estoy nervioso por mi entrevista"})
-    with db.conectar() as con:
-        despues = [con.execute(f"SELECT COUNT(*) FROM {t}").fetchone()[0] for t in sorted(tablas())]
-    assert antes == despues
+    cliente.post("/api/explicar", json={"vacante_id": "V01", "perfil": {"A1": 50}})
+    assert contar("resultados") == antes
 
 
-def test_explicar_registra_fuente_y_tiempo(monkeypatch):
-    monkeypatch.setattr(ia, "OLLAMA_URL", "http://127.0.0.1:9")
-    ia._memoria.clear()
-    antes = db.resumen()["explicaciones"]["con_plantilla"]
-    cliente.post("/api/explicar", json={"vacante_id": "V02", "perfil": {"A1": 70, "A6": 40}})
-    assert db.resumen()["explicaciones"]["con_plantilla"] == antes + 1
+# ---------- Panel del jefe: acceso ----------
+
+def test_panel_cerrado_sin_clave_configurada(monkeypatch):
+    monkeypatch.setattr(main, "JEFE_CLAVE", "")
+    for ruta in ("/api/jefe/acceso", "/api/jefe/estadisticas", "/api/jefe/puestos", "/api/jefe/resultados.csv"):
+        assert cliente.get(ruta, headers=JEFE).status_code == 503
+    assert cliente.post("/api/jefe/puestos", json=PUESTO, headers=JEFE).status_code == 503
 
 
-def test_resumen_de_reportes():
-    cliente.post("/api/evaluar", json={"respuestas": respuestas_completas()})
-    r = cliente.get("/api/reportes/resumen").json()
-    assert r["evaluaciones"] >= 1
-    assert len(r["aptitudes"]) == 8 and all(0 <= a["promedio"] <= 100 for a in r["aptitudes"])
-    assert len(r["vacantes"]) == 20
-    assert sum(v["veces_top5"] for v in r["vacantes"]) == 5 * r["evaluaciones"]
-    assert sum(v["veces_primera"] for v in r["vacantes"]) == r["evaluaciones"]
-    assert r["por_dia"][-1]["fecha"] == db.hoy()
+def test_clave_incorrecta(jefe):
+    assert cliente.get("/api/jefe/acceso").status_code == 401
+    assert cliente.get("/api/jefe/acceso", headers={"X-Clave-Jefe": "otra"}).status_code == 401
+    assert cliente.post("/api/jefe/puestos", json=PUESTO).status_code == 401
+    assert cliente.get("/api/jefe/acceso", headers=JEFE).json()["umbral_reforzar"] == 75
 
 
-def test_filtro_de_fechas():
-    assert cliente.get("/api/reportes/resumen?desde=2000-01-01&hasta=2000-01-02").json()["evaluaciones"] == 0
-    assert cliente.get("/api/reportes/resumen?desde=ayer").status_code == 422
-    assert cliente.get("/api/reportes/resumen?desde=2026-10-30&hasta=2026-10-01").status_code == 422
+# ---------- Panel del jefe: estadísticas ----------
+
+def test_estadisticas(jefe):
+    cliente.post("/api/evaluar", json={"respuestas": respuestas(escala=5)})
+    e = cliente.get("/api/jefe/estadisticas", headers=JEFE).json()
+    assert e["evaluaciones"] == contar("resultados") >= 1
+    assert sum(e["niveles"].values()) == e["evaluaciones"]
+    assert sum(p["personas"] for p in e["por_puesto"]) == e["evaluaciones"]
+    assert all(p["preparado"] + p["reforzar"] + p["no_apto"] == p["personas"] for p in e["por_puesto"])
+    assert e["por_dia"][-1]["fecha"] == db.hoy()
+    vacio = cliente.get("/api/jefe/estadisticas?desde=2000-01-01&hasta=2000-01-02", headers=JEFE).json()
+    assert vacio["evaluaciones"] == 0 and vacio["niveles"] == {"preparado": 0, "reforzar": 0, "no_apto": 0}
+    assert cliente.get("/api/jefe/estadisticas?desde=ayer", headers=JEFE).status_code == 422
 
 
-def test_csv_anonimo():
-    r = cliente.get("/api/reportes/evaluaciones.csv")
+def test_csv_de_resultados(jefe):
+    r = cliente.get("/api/jefe/resultados.csv", headers=JEFE)
     assert r.status_code == 200 and r.headers["content-type"].startswith("text/csv")
     lineas = r.text.strip().split("\n")
-    assert lineas[0] == "evaluacion,fecha,A1,A2,A3,A4,A5,A6,A7,A8,vacante_1,afinidad_1"
-    assert len(lineas) - 1 == db.resumen()["evaluaciones"]
+    assert lineas[0] == "resultado,fecha,vacante,titulo,afinidad,brechas,nivel"
+    assert len(lineas) - 1 == contar("resultados")
 
 
-def test_clave_de_reportes(monkeypatch):
-    monkeypatch.setattr(main, "REPORTES_CLAVE", "clave-de-prueba")
-    assert cliente.get("/api/reportes/acceso").json() == {"requiere_clave": True}
-    assert cliente.get("/api/reportes/resumen").status_code == 401
-    assert cliente.get("/api/reportes/resumen", headers={"X-Clave-Reportes": "otra"}).status_code == 401
-    assert cliente.get("/api/reportes/resumen", headers={"X-Clave-Reportes": "clave-de-prueba"}).status_code == 200
-    assert cliente.get("/api/reportes/evaluaciones.csv").status_code == 401
+# ---------- Panel del jefe: puestos ----------
+
+def test_jefe_agrega_un_puesto_y_se_recomienda(jefe):
+    r = cliente.post("/api/jefe/puestos", json=PUESTO, headers=JEFE)
+    assert r.status_code == 201
+    p = r.json()
+    assert p["id"].startswith("P") and p["origen"] == "jefe" and p["activa"] is True
+    assert p["requisitos"] == {"A8": {"minimo": 60, "peso": 3}, "A3": {"minimo": 50, "peso": 2},
+                               "A5": {"minimo": 40, "peso": 1}}
+    assert p["id"] in {v["id"] for v in cliente.get("/api/vacantes").json()["vacantes"]}
+    # Una persona fuerte en servicio y comunicación ve el puesto nuevo entre sus recomendaciones.
+    servicio = {str(q["id"]): (q["correcta"] if q["aptitud"] in ("A3",) else (q["correcta"] + 1) % 4)
+                if q["tipo"] == "opcion_multiple" else (5 if not q["invertida"] else 1) for q in main.PREGUNTAS["preguntas"]}
+    recs = cliente.post("/api/evaluar", json={"respuestas": servicio}).json()["recomendaciones"]
+    assert p["id"] in [x["vacante"]["id"] for x in recs]
+    # Se puede explicar con la IA (o la plantilla) como cualquier vacante.
+    assert cliente.post("/api/explicar", json={"vacante_id": p["id"], "perfil": {"A8": 90}}).status_code == 200
+
+
+def test_el_puesto_del_jefe_sobrevive_a_reiniciar(jefe):
+    p = cliente.post("/api/jefe/puestos", json=dict(PUESTO, titulo="Puesto persistente"), headers=JEFE).json()
+    db.inicializar(json.loads((DATOS / "preguntas.json").read_text(encoding="utf-8")),
+                   json.loads((DATOS / "vacantes.json").read_text(encoding="utf-8")))
+    guardado = next(v for v in db.cargar_vacantes(incluir_inactivas=True) if v["id"] == p["id"])
+    assert guardado["titulo"] == "Puesto persistente" and len(guardado["requisitos"]) == 3
+
+
+def test_desactivar_y_reactivar(jefe):
+    p = cliente.post("/api/jefe/puestos", json=dict(PUESTO, titulo="Puesto temporal"), headers=JEFE).json()
+    assert cliente.patch(f"/api/jefe/puestos/{p['id']}", json={"activa": False}, headers=JEFE).status_code == 200
+    assert p["id"] not in {v["id"] for v in cliente.get("/api/vacantes").json()["vacantes"]}
+    assert cliente.post("/api/explicar", json={"vacante_id": p["id"], "perfil": {"A8": 90}}).status_code == 404
+    lista = cliente.get("/api/jefe/puestos", headers=JEFE).json()["puestos"]
+    assert next(v for v in lista if v["id"] == p["id"])["activa"] is False
+    cliente.patch(f"/api/jefe/puestos/{p['id']}", json={"activa": True}, headers=JEFE)
+    assert p["id"] in {v["id"] for v in cliente.get("/api/vacantes").json()["vacantes"]}
+    assert cliente.patch("/api/jefe/puestos/X99", json={"activa": False}, headers=JEFE).status_code == 404
+
+
+@pytest.mark.parametrize("cambio", [
+    {"titulo": "ab"},
+    {"modalidad": "Marte"},
+    {"descripcion": "corta"},
+    {"requisitos": {}},
+    {"requisitos": {"Z9": "clave"}},
+    {"requisitos": {"A1": "imprescindible"}},
+    {"habilidades_clave": ["x" * 41]},
+    {"salario": 10000},
+])
+def test_puesto_invalido(jefe, cambio):
+    r = cliente.post("/api/jefe/puestos", json=dict(PUESTO, **cambio), headers=JEFE)
+    assert r.status_code == 422 and "detail" in r.json()
 
 
 def test_restricciones_del_esquema():
     with pytest.raises(sqlite3.IntegrityError):
         with db.conectar() as con:
-            con.execute("INSERT INTO requisitos VALUES ('V01', 'A2', 50, 0, 9)")  # peso en cero
+            con.execute("INSERT INTO resultados (fecha, vacante_id, afinidad, brechas, nivel) "
+                        "VALUES ('2026-10-26', 'V01', 90, 1, 'excelente')")
     with pytest.raises(sqlite3.IntegrityError):
         with db.conectar() as con:
-            con.execute("INSERT INTO evaluacion_recomendaciones VALUES (999999, 1, 'V01', 90)")  # evaluación inexistente
+            con.execute("INSERT INTO resultados (fecha, vacante_id, afinidad, brechas, nivel) "
+                        "VALUES ('2026-10-26', 'NO-EXISTE', 90, 1, 'reforzar')")

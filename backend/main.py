@@ -1,4 +1,4 @@
-"""API de Pulso (sección 6.6 del plan) + módulo de apoyo + pantallas ya compiladas.
+"""API de Pulso (sección 6.6 del plan) + módulo de apoyo + panel del jefe + pantallas ya compiladas.
 
 Correr en la VM:  uvicorn main:app --host 0.0.0.0 --port 8000   (desde backend/)
 """
@@ -7,35 +7,45 @@ import logging
 import os
 import re
 import secrets
-import time
 from pathlib import Path
-from typing import Annotated
+from typing import Annotated, Literal
 
 from fastapi import FastAPI, Header, HTTPException, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse, Response
 from fastapi.staticfiles import StaticFiles
-from pydantic import BaseModel, ConfigDict, Field, StrictInt
+from pydantic import BaseModel, ConfigDict, Field, StrictBool, StrictInt, field_validator
 
 import apoyo
 import db
 import ia
-from motor import calcular_perfil, recomendar, validar_respuestas
+from motor import NIVELES, UMBRAL_REFORZAR, calcular_perfil, clasificar, recomendar, validar_respuestas
 
 BASE = Path(__file__).resolve().parent
 DIST = Path(os.getenv("PULSO_DIST", BASE.parent / "dist"))
 
-REPORTES_CLAVE = os.getenv("REPORTES_CLAVE", "")  # vacía = reportes sin clave (solo datos anónimos y agregados)
+# Contraseña del panel del jefe (estadísticas y alta de puestos). Vacía = panel cerrado.
+JEFE_CLAVE = os.getenv("JEFE_CLAVE", "")
+MAX_PUESTOS = 60
 log = logging.getLogger("pulso")
 
 # Los JSON son la fuente que editan los roles 2 y 3; al arrancar se copian a SQLite y la API lee de ahí.
 _preguntas_json = json.loads((BASE / "datos" / "preguntas.json").read_text(encoding="utf-8"))
 db.inicializar(_preguntas_json, json.loads((BASE / "datos" / "vacantes.json").read_text(encoding="utf-8")))
 PREGUNTAS = dict(db.cargar_preguntas(), escala=_preguntas_json["escala"])
-VACANTES = db.cargar_vacantes()
-POR_ID = {v["id"]: v for v in VACANTES}
 APTITUDES = {a["id"] for a in PREGUNTAS["aptitudes"]}
 APOYO = apoyo.cargar()
+VACANTES, POR_ID = [], {}
+
+
+def recargar_vacantes():
+    """Las vacantes activas que se recomiendan. Se llama al arrancar y cada vez que el jefe cambia un puesto."""
+    global VACANTES, POR_ID
+    VACANTES = db.cargar_vacantes()
+    POR_ID = {v["id"]: v for v in VACANTES}
+
+
+recargar_vacantes()
 
 app = FastAPI(title="Pulso: aptitudes y vacantes", docs_url="/api/docs", openapi_url="/api/openapi.json")
 
@@ -54,6 +64,35 @@ class PedidoExplicacion(BaseModel):
 class PedidoApoyo(BaseModel):
     model_config = ConfigDict(extra="forbid")
     texto: Annotated[str, Field(min_length=1, max_length=apoyo.MAX_TEXTO)]
+
+
+Texto = lambda minimo, maximo: Annotated[str, Field(min_length=minimo, max_length=maximo)]
+
+
+class NuevoPuesto(BaseModel):
+    model_config = ConfigDict(extra="forbid", str_strip_whitespace=True)
+    titulo: Texto(3, 80)
+    empresa: Texto(2, 80)
+    area: Texto(2, 60)
+    modalidad: Literal["Presencial", "Híbrido", "Remoto"]
+    descripcion: Texto(10, 400)
+    habilidades_clave: Annotated[list[Texto(1, 40)], Field(max_length=8)] = []
+    requisitos: dict[str, Literal["clave", "importante", "deseable"]]
+
+    @field_validator("requisitos")
+    @classmethod
+    def requisitos_validos(cls, v):
+        if not v:
+            raise ValueError("elige al menos una aptitud que pida el puesto")
+        desconocidas = sorted(set(v) - APTITUDES)
+        if desconocidas:
+            raise ValueError(f"aptitudes desconocidas: {desconocidas}")
+        return v
+
+
+class CambioEstado(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    activa: StrictBool
 
 
 @app.exception_handler(RequestValidationError)
@@ -104,13 +143,16 @@ def evaluar(e: Evaluacion):
     except ValueError as err:
         raise HTTPException(422, str(err))
     perfil = calcular_perfil(PREGUNTAS["preguntas"], respuestas)
-    recomendaciones = [dict(r, fortalezas=_con_nombres(r["fortalezas"]), brechas=_con_nombres(r["brechas"]))
+    recomendaciones = [dict(r, fortalezas=_con_nombres(r["fortalezas"]), brechas=_con_nombres(r["brechas"]),
+                            nivel=clasificar(r["afinidad"], r["brechas"]))
                        for r in recomendar(perfil, VACANTES, n=5)]
+    mejor = recomendaciones[0]
     try:
-        db.registrar_evaluacion(perfil, recomendaciones)  # anónimo: sin alias ni respuestas
+        # Solo el resultado: sin alias, respuestas ni puntajes por aptitud.
+        db.registrar_resultado(mejor["vacante"]["id"], mejor["afinidad"], len(mejor["brechas"]), mejor["nivel"])
     except Exception:
-        log.warning("No se pudo registrar la evaluación en la base de datos")
-    return {"perfil": perfil, "recomendaciones": recomendaciones}
+        log.warning("No se pudo registrar el resultado en la base de datos")
+    return {"perfil": perfil, "recomendaciones": recomendaciones, "nivel": mejor["nivel"]}
 
 
 @app.post("/api/explicar")
@@ -119,14 +161,7 @@ def explicar_vacante(p: PedidoExplicacion):
     if vacante is None:
         raise HTTPException(404, "Vacante no encontrada")
     _validar_perfil(p.perfil)
-    inicio = time.monotonic()
-    resultado = ia.explicar(vacante, p.perfil)
-    try:
-        db.registrar_explicacion(vacante["id"], resultado["fuente"], time.monotonic() - inicio,
-                                 resultado.get("memoria", False))
-    except Exception:
-        log.warning("No se pudo registrar la explicación en la base de datos")
-    return resultado
+    return ia.explicar(vacante, p.perfil)
 
 
 @app.get("/api/vacantes")
@@ -142,11 +177,16 @@ def apoyo_busqueda(p: PedidoApoyo):
     return APOYO.buscar(p.texto)
 
 
+# ---------- Panel del jefe ----------
+
 def _autorizar(clave):
-    if REPORTES_CLAVE and not secrets.compare_digest(clave or "", REPORTES_CLAVE):
-        raise HTTPException(401, "Clave de reportes incorrecta")
+    if not JEFE_CLAVE:
+        raise HTTPException(503, "El panel del jefe está cerrado: falta definir JEFE_CLAVE en backend/.env")
+    if not secrets.compare_digest(clave or "", JEFE_CLAVE):
+        raise HTTPException(401, "Contraseña del jefe incorrecta")
 
 
+ClaveJefe = Annotated[str | None, Header(alias="X-Clave-Jefe")]
 _FECHA = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 
 
@@ -158,26 +198,56 @@ def _fechas(desde, hasta):
         raise HTTPException(422, "'desde' no puede ser posterior a 'hasta'")
 
 
-@app.get("/api/reportes/acceso")
-def reportes_acceso():
-    return {"requiere_clave": bool(REPORTES_CLAVE)}
+@app.get("/api/jefe/acceso")
+def jefe_acceso(x_clave_jefe: ClaveJefe = None):
+    """Comprueba la contraseña y devuelve las reglas del panel."""
+    _autorizar(x_clave_jefe)
+    return {"ok": True, "niveles": NIVELES, "umbral_reforzar": UMBRAL_REFORZAR,
+            "aptitudes": PREGUNTAS["aptitudes"], "importancia": {k: {"peso": p, "minimo": m}
+                                                                 for k, (p, m) in db.IMPORTANCIA.items()}}
 
 
-@app.get("/api/reportes/resumen")
-def reportes_resumen(desde: str | None = None, hasta: str | None = None,
-                     x_clave_reportes: Annotated[str | None, Header()] = None):
-    _autorizar(x_clave_reportes)
+@app.get("/api/jefe/estadisticas")
+def jefe_estadisticas(desde: str | None = None, hasta: str | None = None, x_clave_jefe: ClaveJefe = None):
+    _autorizar(x_clave_jefe)
     _fechas(desde, hasta)
-    return db.resumen(desde, hasta)
+    return db.estadisticas(desde, hasta)
 
 
-@app.get("/api/reportes/evaluaciones.csv")
-def reportes_csv(desde: str | None = None, hasta: str | None = None,
-                 x_clave_reportes: Annotated[str | None, Header()] = None):
-    _autorizar(x_clave_reportes)
+@app.get("/api/jefe/resultados.csv")
+def jefe_csv(desde: str | None = None, hasta: str | None = None, x_clave_jefe: ClaveJefe = None):
+    _autorizar(x_clave_jefe)
     _fechas(desde, hasta)
-    return Response(db.evaluaciones_csv(desde, hasta), media_type="text/csv; charset=utf-8",
-                    headers={"Content-Disposition": 'attachment; filename="pulso_evaluaciones.csv"'})
+    return Response(db.resultados_csv(desde, hasta), media_type="text/csv; charset=utf-8",
+                    headers={"Content-Disposition": 'attachment; filename="pulso_resultados.csv"'})
+
+
+@app.get("/api/jefe/puestos")
+def jefe_puestos(x_clave_jefe: ClaveJefe = None):
+    _autorizar(x_clave_jefe)
+    return {"puestos": db.cargar_vacantes(incluir_inactivas=True, detalle=True)}
+
+
+@app.post("/api/jefe/puestos", status_code=201)
+def jefe_crear_puesto(p: NuevoPuesto, x_clave_jefe: ClaveJefe = None):
+    _autorizar(x_clave_jefe)
+    if len(db.cargar_vacantes(incluir_inactivas=True)) >= MAX_PUESTOS:
+        raise HTTPException(409, f"Se alcanzó el máximo de {MAX_PUESTOS} puestos; desactiva o revisa los existentes")
+    puesto = db.crear_puesto(p.model_dump())
+    recargar_vacantes()
+    return puesto
+
+
+@app.patch("/api/jefe/puestos/{vacante_id}")
+def jefe_cambiar_estado(vacante_id: str, c: CambioEstado, x_clave_jefe: ClaveJefe = None):
+    _autorizar(x_clave_jefe)
+    vid = vacante_id.strip().upper()
+    if c.activa is False and vid in POR_ID and len(VACANTES) <= 5:
+        raise HTTPException(409, "Debe haber al menos 5 puestos activos para poder recomendar")
+    if not db.cambiar_estado(vid, c.activa):
+        raise HTTPException(404, "Puesto no encontrado")
+    recargar_vacantes()
+    return {"id": vid, "activa": c.activa}
 
 
 @app.get("/api/{resto:path}", include_in_schema=False)

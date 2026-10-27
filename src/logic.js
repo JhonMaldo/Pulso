@@ -41,13 +41,46 @@ export function mensajeError(status, cuerpo) {
  return typeof d === 'string' ? d : 'No se pudo completar la solicitud.';
 }
 
-// ---------- Reportes ----------
+// ---------- Panel del jefe ----------
 const MESES = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
 export const etiquetaDia = iso => `${Number(iso.slice(8, 10))} ${MESES[Number(iso.slice(5, 7)) - 1]}`;
 export const porcentaje = (parte, total) => total ? Math.round(parte / total * 100) : 0;
-// Solo las vacantes que sí aparecieron en algún top 5, de más a menos recomendada.
-export const vacantesRecomendadas = (vacantes, n = 10) => vacantes.filter(v => v.veces_top5 > 0).slice(0, n);
 export function rangoValido(desde, hasta) {
  if (desde && hasta && desde > hasta) return 'La fecha «desde» no puede ser posterior a «hasta».';
  return '';
+}
+
+// Niveles de preparación, en el orden en que se muestran. Los textos los ve el jefe.
+export const NIVELES = [
+ { id: 'preparado', nombre: 'Preparado', detalle: 'Cumple todos los mínimos del puesto que mejor le queda' },
+ { id: 'reforzar', nombre: 'Le faltan habilidades', detalle: 'Tiene brechas, pero afinidad de 75 % o más' },
+ { id: 'no_apto', nombre: 'No apto por ahora', detalle: 'Afinidad menor a 75 %: debería reforzarse o buscar otra área' },
+];
+
+// Porcentajes que siempre suman 100 (método del mayor residuo), para la barra y las tarjetas.
+export function porcentajesNiveles(niveles) {
+ const total = NIVELES.reduce((s, n) => s + (niveles[n.id] || 0), 0);
+ if (!total) return Object.fromEntries(NIVELES.map(n => [n.id, 0]));
+ const exactos = NIVELES.map(n => ({ id: n.id, v: (niveles[n.id] || 0) / total * 100 }));
+ const base = exactos.map(e => ({ ...e, p: Math.floor(e.v) }));
+ let faltan = 100 - base.reduce((s, e) => s + e.p, 0);
+ [...base].sort((a, b) => (b.v - b.p) - (a.v - a.p)).forEach(e => { if (faltan > 0 && e.v > e.p) { e.p += 1; faltan -= 1; } });
+ return Object.fromEntries(base.map(e => [e.id, e.p]));
+}
+
+// Mensaje para la persona evaluada, según su nivel en el puesto que mejor le queda.
+export const MENSAJE_NIVEL = {
+ preparado: 'Cumples todos los requisitos de este puesto.',
+ reforzar: 'Te faltan algunas habilidades para este puesto: revisa tus brechas.',
+ no_apto: 'Todavía no alcanzas lo que piden estos puestos. Refuerza tus aptitudes más bajas o explora otras áreas.',
+};
+
+// Cuerpo de POST /api/jefe/puestos a partir del formulario.
+export function armarPuesto(f) {
+ const habilidades = f.habilidades.split(',').map(h => h.trim()).filter(Boolean);
+ const requisitos = Object.fromEntries(Object.entries(f.requisitos).filter(([, v]) => v));
+ if (!Object.keys(requisitos).length) throw new Error('Elige al menos una aptitud que pida el puesto.');
+ if (habilidades.length > 8) throw new Error('Escribe como máximo 8 habilidades clave.');
+ return { titulo: f.titulo.trim(), empresa: f.empresa.trim(), area: f.area.trim(), modalidad: f.modalidad,
+  descripcion: f.descripcion.trim(), habilidades_clave: habilidades, requisitos };
 }

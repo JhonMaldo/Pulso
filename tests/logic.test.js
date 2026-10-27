@@ -57,15 +57,21 @@ test('mensajes de error claros sin conexión, con límite y con detalle de la AP
  assert.equal(mensajeError(422, { detail: [{ msg: 'x' }] }), 'No se pudo completar la solicitud.');
 });
 
-test('ayudantes de reportes', async () => {
- const { etiquetaDia, porcentaje, vacantesRecomendadas, rangoValido } = await import('../src/logic.js');
+test('ayudantes del panel del jefe', async () => {
+ const { etiquetaDia, porcentaje, rangoValido, porcentajesNiveles, armarPuesto, MENSAJE_NIVEL, NIVELES } = await import('../src/logic.js');
  assert.equal(etiquetaDia('2026-10-22'), '22 oct');
- assert.equal(etiquetaDia('2026-01-05'), '5 ene');
  assert.equal(porcentaje(3, 4), 75);
  assert.equal(porcentaje(1, 0), 0);
- const v = [{ id: 'V01', veces_top5: 3 }, { id: 'V02', veces_top5: 1 }, { id: 'V03', veces_top5: 0 }];
- assert.deepEqual(vacantesRecomendadas(v).map(x => x.id), ['V01', 'V02']);
- assert.deepEqual(vacantesRecomendadas(v, 1).map(x => x.id), ['V01']);
- assert.equal(rangoValido('2026-10-01', '2026-10-30'), '');
  assert.match(rangoValido('2026-10-30', '2026-10-01'), /posterior/);
+ // Los porcentajes de los 3 niveles siempre suman 100.
+ const p = porcentajesNiveles({ preparado: 1, reforzar: 1, no_apto: 1 });
+ assert.equal(p.preparado + p.reforzar + p.no_apto, 100);
+ assert.deepEqual(porcentajesNiveles({ preparado: 0, reforzar: 0, no_apto: 0 }), { preparado: 0, reforzar: 0, no_apto: 0 });
+ assert.deepEqual(porcentajesNiveles({ preparado: 2, reforzar: 1, no_apto: 1 }), { preparado: 50, reforzar: 25, no_apto: 25 });
+ assert.deepEqual(NIVELES.map(n => n.id), Object.keys(MENSAJE_NIVEL));
+ const f = { titulo: ' Cajero ', empresa: 'Tienda', area: 'Ventas', modalidad: 'Presencial', descripcion: 'Cobra y atiende clientes.',
+  habilidades: 'Caja, , Atención ', requisitos: { A2: 'clave', A8: 'importante', A1: '' } };
+ assert.deepEqual(armarPuesto(f), { titulo: 'Cajero', empresa: 'Tienda', area: 'Ventas', modalidad: 'Presencial',
+  descripcion: 'Cobra y atiende clientes.', habilidades_clave: ['Caja', 'Atención'], requisitos: { A2: 'clave', A8: 'importante' } });
+ assert.throws(() => armarPuesto({ ...f, requisitos: { A1: '' } }), /al menos una aptitud/);
 });

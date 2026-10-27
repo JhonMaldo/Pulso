@@ -66,6 +66,22 @@ def afinidad(perfil, vacante):
     return puntaje, fortalezas, brechas
 
 
+# Niveles de preparación para el puesto que mejor le queda a la persona (estadística del panel del jefe).
+UMBRAL_REFORZAR = 75
+NIVELES = {
+    "preparado": "Preparado",
+    "reforzar": "Le faltan habilidades",
+    "no_apto": "No apto por ahora",
+}
+
+
+def clasificar(puntaje, brechas):
+    """preparado: cumple todos los mínimos · reforzar: tiene brechas pero afinidad >= 75 · no_apto: afinidad < 75."""
+    if not brechas:
+        return "preparado"
+    return "reforzar" if puntaje >= UMBRAL_REFORZAR else "no_apto"
+
+
 def _margen(perfil, vacante):
     """Promedio ponderado del perfil sin tope. Solo desempata vacantes con la misma afinidad."""
     reqs = vacante["requisitos"].values()

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { explicar } from './api.js';
-import { compararRequisitos, etiquetaFuente, nivel, tipoRequisito } from './logic.js';
+import { MENSAJE_NIVEL, NIVELES, compararRequisitos, etiquetaFuente, nivel, tipoRequisito } from './logic.js';
 
 export function Perfil({ perfil, aptitudes }) {
  return <div className="card">
@@ -20,6 +20,7 @@ export function Resultados({ resultado, aptitudes, alias, onDetalle, onReiniciar
  return <>
   <div className="section-title"><p className="eyebrow">RESULTADOS</p><h3>{alias ? `${alias}, este` : 'Este'} es tu punto de partida.</h3><p>Las vacantes son datos de ejemplo. La afinidad es una orientación, no una probabilidad de contratación.</p></div>
   <div className="result-banner"><div><span className="eyebrow">MAYOR AFINIDAD</span><h2>{primera.vacante.titulo}</h2><p>{primera.vacante.area} · {primera.vacante.modalidad}</p></div><strong>{primera.afinidad}<small>%</small></strong></div>
+  {resultado.nivel && <p className={`nivel-mensaje nivel-borde-${resultado.nivel}`}><b>{NIVELES.find(n => n.id === resultado.nivel)?.nombre}.</b> {MENSAJE_NIVEL[resultado.nivel]}</p>}
   <div className="result-grid">
    <Perfil perfil={resultado.perfil} aptitudes={aptitudes}/>
    <div className="card">
