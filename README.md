@@ -32,7 +32,7 @@ flowchart LR
     subgraph VM["VM alonso · Ubuntu 26.04 · VPN 100.64.0.1"]
       A["FastAPI (uvicorn :8000)<br/>API /api + pantallas React"]
       M["motor.py<br/>perfil y afinidad"]
-      K[("SQLite pulso.db<br/>catálogo + registro anónimo<br/>KB_limpio.json")]
+      K[("SQLite pulso.db<br/>puestos + resultados<br/>KB_limpio.json")]
       A --> M
       A --> K
     end
@@ -95,27 +95,46 @@ El despliegue completo (VM, systemd, UFW, NGINX) está en [deploy/README.md](dep
 | `POST /api/explicar` | `{"vacante_id": "V01", "perfil": {...}}` | `{"texto", "fuente": "ia" \| "plantilla", "herramientas"}` |
 | `GET /api/vacantes` | — | Catálogo de 20 vacantes |
 | `POST /api/apoyo` | `{"texto": "..."}` (máx. 500) | `{"tag", "respuesta", "similitud", "crisis"}` |
-| `GET /api/reportes/resumen` | `?desde=AAAA-MM-DD&hasta=AAAA-MM-DD` (opcional) | Totales, promedio por aptitud, evaluaciones por día, vacantes más recomendadas, uso de la IA |
-| `GET /api/reportes/evaluaciones.csv` | Mismo filtro | Una fila anónima por evaluación |
+| `/api/jefe/*` | Contraseña en `X-Clave-Jefe` | Panel del jefe (ver abajo) |
 
 Validaciones: escala de 1 a 5, opción dentro del rango, todas las respuestas, perfil de 0 a 100, campos extra rechazados (no se aceptan datos personales). Los errores son `422`/`404` con un mensaje en español y el servicio no se cae. Documentación interactiva en `/api/docs`.
 
-## Base de datos (SQLite) y reportes
+## Base de datos (SQLite) y panel del jefe
 
-Pulso usa **SQLite** (`backend/datos/pulso.db`, módulo `backend/db.py`): un solo archivo, sin servidor encendido, incluido en Python. Al arrancar, la API crea las tablas, copia el catálogo desde `preguntas.json` y `vacantes.json` (los archivos que editan los roles 2 y 3) y desde ahí lee aptitudes, preguntas y vacantes.
+Pulso usa **SQLite** (`backend/datos/pulso.db`, módulo `backend/db.py`): un solo archivo, sin servidor encendido, incluido en Python.
 
 | Tabla | Qué guarda |
 |---|---|
-| `aptitudes`, `preguntas` | Las 8 aptitudes y las 24 preguntas (opciones y respuesta correcta en el servidor) |
-| `vacantes`, `requisitos` | Las 20 vacantes y su mínimo y peso por aptitud |
-| `evaluaciones` | Una fila por prueba terminada: **solo el día** (hora de México) |
-| `evaluacion_aptitudes` | El puntaje de 0 a 100 de cada aptitud de esa evaluación |
-| `evaluacion_recomendaciones` | Las 5 vacantes recomendadas, su posición y afinidad |
-| `explicaciones` | Cada «¿Por qué?»: vacante, fuente (`ia` o `plantilla`) y segundos |
+| `aptitudes`, `preguntas` | Las 8 aptitudes y las 24 preguntas; se copian de `preguntas.json` al arrancar |
+| `vacantes`, `requisitos` | Los puestos y su mínimo y peso por aptitud. Los de ejemplo (`V01`…`V20`) vienen de `vacantes.json`; los que agrega el jefe (`P01`, `P02`…) se guardan aquí y se conservan |
+| `resultados` | **Solo el resultado** de cada evaluación: día, puesto que mejor le queda a la persona, afinidad, número de brechas y nivel |
 
-**Privacidad:** no se guarda el alias, las respuestas individuales, la IP ni nada del módulo de apoyo; ninguna tabla tiene columnas para eso (lo comprueba `backend/tests/test_db.py`).
+**Niveles de preparación** (para el puesto que mejor le queda a cada persona):
 
-**Reportes:** la pestaña «Reportes» muestra evaluaciones, porcentaje de explicaciones con IA, tiempo promedio de la IA, vacante más recomendada, promedio por aptitud, evaluaciones por día y la tabla de vacantes, con filtro de fechas y descarga en CSV. Para pedir una clave, define `REPORTES_CLAVE` en `backend/.env`; sin ella, los reportes están abiertos porque solo muestran datos anónimos y agregados.
+| Nivel | Regla |
+|---|---|
+| Preparado | Cumple todos los mínimos del puesto (afinidad 100 %) |
+| Le faltan habilidades | Tiene brechas, pero afinidad de 75 % o más |
+| No apto por ahora | Afinidad menor a 75 %: debería reforzarse o buscar otra área |
+
+La persona evaluada también ve su nivel en la pantalla de resultados, con un mensaje sin juicios.
+
+**Privacidad:** no se guardan alias, respuestas, puntajes por aptitud, IP ni nada del módulo de apoyo; la tabla `resultados` solo tiene las 6 columnas descritas (lo comprueba `backend/tests/test_db.py`).
+
+**Panel del jefe** (pestaña 03, protegida con contraseña):
+- **Estadísticas:** porcentaje de personas preparadas, a las que les faltan habilidades y no aptas; desglose por puesto; evaluaciones por día; filtro de fechas y CSV.
+- **Puestos:** agregar un puesto (nombre, empresa, área, modalidad, descripción, habilidades y qué aptitudes pide: clave, importante o deseable) y activarlo o desactivarlo. Un puesto nuevo se recomienda al instante.
+
+La contraseña se define con `JEFE_CLAVE` en `backend/.env`. Sin ella, el panel queda cerrado (503), para que nadie en Internet pueda agregar puestos.
+
+| Endpoint (todos con encabezado `X-Clave-Jefe`) | Hace |
+|---|---|
+| `GET /api/jefe/acceso` | Comprueba la contraseña |
+| `GET /api/jefe/estadisticas?desde=&hasta=` | Niveles, por puesto y por día |
+| `GET /api/jefe/resultados.csv` | `resultado,fecha,vacante,titulo,afinidad,brechas,nivel` |
+| `GET /api/jefe/puestos` | Todos los puestos, activos e inactivos |
+| `POST /api/jefe/puestos` | Agrega un puesto |
+| `PATCH /api/jefe/puestos/{id}` | `{"activa": true/false}` |
 
 ## El motor de afinidad
 
