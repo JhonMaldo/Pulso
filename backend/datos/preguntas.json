@@ -1,0 +1,47 @@
+{
+  "estado": "BORRADOR para revisión del rol 2 (contenido). No es una prueba psicométrica validada.",
+  "escala": ["Nunca", "Pocas veces", "Algunas veces", "Casi siempre", "Siempre"],
+  "aptitudes": [
+    {"id": "A1", "nombre": "Razonamiento lógico", "descripcion": "Series, patrones y deducciones"},
+    {"id": "A2", "nombre": "Razonamiento numérico", "descripcion": "Porcentajes, proporciones y cálculos"},
+    {"id": "A3", "nombre": "Comunicación", "descripcion": "Comprensión de textos cortos y redacción"},
+    {"id": "A4", "nombre": "Trabajo en equipo", "descripcion": "Colaboración y manejo de conflictos"},
+    {"id": "A5", "nombre": "Organización y planeación", "descripcion": "Prioridades, tiempos y orden"},
+    {"id": "A6", "nombre": "Resolución de problemas", "descripcion": "Analizar un caso y elegir una solución"},
+    {"id": "A7", "nombre": "Atención al detalle", "descripcion": "Detectar errores en datos o textos"},
+    {"id": "A8", "nombre": "Servicio al cliente", "descripcion": "Trato y orientación al cliente"}
+  ],
+  "preguntas": [
+    {"id": 1, "aptitud": "A1", "tipo": "opcion_multiple", "texto": "¿Qué número sigue en la serie 2, 4, 8, 16, ...?", "opciones": ["18", "24", "32", "36"], "correcta": 2},
+    {"id": 2, "aptitud": "A1", "tipo": "opcion_multiple", "texto": "Todos los técnicos de la empresa saben usar Git. Laura es técnica de la empresa. ¿Qué se puede concluir?", "opciones": ["Laura sabe usar Git", "Laura no sabe usar Git", "Todas las personas que usan Git son técnicas", "No se puede concluir nada"], "correcta": 0},
+    {"id": 3, "aptitud": "A1", "tipo": "opcion_multiple", "texto": "¿Qué letra sigue en la serie A, C, E, G, ...?", "opciones": ["H", "I", "J", "K"], "correcta": 1},
+
+    {"id": 4, "aptitud": "A2", "tipo": "opcion_multiple", "texto": "Un producto cuesta $400 y tiene 25 % de descuento. ¿Cuánto pagas?", "opciones": ["$100", "$300", "$325", "$375"], "correcta": 1},
+    {"id": 5, "aptitud": "A2", "tipo": "opcion_multiple", "texto": "3 personas capturan 90 registros en una hora. Al mismo ritmo, ¿cuántos registros capturan 5 personas en una hora?", "opciones": ["120", "135", "150", "180"], "correcta": 2},
+    {"id": 6, "aptitud": "A2", "tipo": "opcion_multiple", "texto": "Las ventas pasaron de 200 a 250 unidades. ¿En qué porcentaje aumentaron?", "opciones": ["5 %", "20 %", "50 %", "25 %"], "correcta": 3},
+
+    {"id": 7, "aptitud": "A3", "tipo": "opcion_multiple", "texto": "Lee: «La reunión se movió del martes al jueves, a la misma hora y en la misma sala». ¿Qué cambió?", "opciones": ["La hora", "El día", "La sala", "Las personas invitadas"], "correcta": 1},
+    {"id": 8, "aptitud": "A3", "tipo": "opcion_multiple", "texto": "¿Cuál mensaje es más claro para pedir un reporte a un compañero?", "opciones": ["Mándame lo de ayer.", "Urge el reporte.", "Cuando puedas me pasas lo que quedó pendiente.", "¿Me envías el reporte de ventas de septiembre antes del viernes a las 12:00?"], "correcta": 3},
+    {"id": 9, "aptitud": "A3", "tipo": "opcion_multiple", "texto": "Lee: «Por falta de piezas, el envío llegará con dos días de retraso». ¿Cuál es la causa del retraso?", "opciones": ["El clima", "Falta de personal", "Falta de piezas", "Un error en la dirección"], "correcta": 2},
+
+    {"id": 10, "aptitud": "A4", "tipo": "escala", "texto": "Cuando hay un desacuerdo en mi equipo, busco una solución que sirva a todos.", "invertida": false},
+    {"id": 11, "aptitud": "A4", "tipo": "escala", "texto": "Comparto información útil con mis compañeros aunque nadie me la pida.", "invertida": false},
+    {"id": 12, "aptitud": "A4", "tipo": "escala", "texto": "Prefiero hacer todo por mi cuenta antes que coordinarme con otras personas.", "invertida": true},
+
+    {"id": 13, "aptitud": "A5", "tipo": "escala", "texto": "Antes de empezar el día, ordeno mis pendientes por prioridad.", "invertida": false},
+    {"id": 14, "aptitud": "A5", "tipo": "escala", "texto": "Divido los trabajos grandes en pasos con fecha de entrega.", "invertida": false},
+    {"id": 15, "aptitud": "A5", "tipo": "escala", "texto": "Dejo las tareas para el último momento.", "invertida": true},
+
+    {"id": 16, "aptitud": "A6", "tipo": "opcion_multiple", "texto": "La impresora de la oficina dejó de imprimir. ¿Qué haces primero?", "opciones": ["Compras una impresora nueva", "Reinstalas el sistema de la computadora", "Revisas que esté encendida, conectada y con papel", "Esperas a que alguien más lo arregle"], "correcta": 2},
+    {"id": 17, "aptitud": "A6", "tipo": "opcion_multiple", "texto": "Un cliente dice que su pedido llegó incompleto. ¿Cuál es la mejor primera acción?", "opciones": ["Revisar el pedido contra la factura para saber qué faltó", "Decirle que no es tu responsabilidad", "Enviarle otro pedido completo sin revisar", "Ofrecerle un descuento y cerrar el caso"], "correcta": 0},
+    {"id": 18, "aptitud": "A6", "tipo": "opcion_multiple", "texto": "Desde hace una semana, una página web tarda mucho en cargar. ¿Qué conviene revisar primero?", "opciones": ["Cambiar los colores del sitio", "Qué cambió en la página o en el servidor esa semana", "Comprar un dominio nuevo", "Pedir a los usuarios que tengan paciencia"], "correcta": 1},
+
+    {"id": 19, "aptitud": "A7", "tipo": "opcion_multiple", "texto": "¿Cuál de estos correos está escrito correctamente?", "opciones": ["ana.lopez@empresa,com", "ana.lopez.empresa.com", "ana lopez@empresa.com", "ana.lopez@empresa.com"], "correcta": 3},
+    {"id": 20, "aptitud": "A7", "tipo": "opcion_multiple", "texto": "Una nota dice: Lápiz $5, Cuaderno $25, Pluma $8. Total: $48. ¿Es correcto el total?", "opciones": ["Sí, es correcto", "No, debería ser $33", "No, debería ser $38", "No, debería ser $40"], "correcta": 2},
+    {"id": 21, "aptitud": "A7", "tipo": "opcion_multiple", "texto": "¿En qué opción los dos códigos son idénticos?", "opciones": ["MX-4821-B / MX-4821-B", "MX-4821-B / MX-4812-B", "MX-4821-B / MX-4821-8", "MX-4821-B / MK-4821-B"], "correcta": 0},
+
+    {"id": 22, "aptitud": "A8", "tipo": "escala", "texto": "Cuando un cliente está molesto, lo escucho completo antes de responder.", "invertida": false},
+    {"id": 23, "aptitud": "A8", "tipo": "escala", "texto": "Doy seguimiento a una persona hasta confirmar que su problema se resolvió.", "invertida": false},
+    {"id": 24, "aptitud": "A8", "tipo": "escala", "texto": "Pierdo la calma cuando alguien me habla de mal modo.", "invertida": true}
+  ]
+}

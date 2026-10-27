@@ -859,6 +859,16 @@
           "sourceIndex": 0,
           "text": "Lamento saberlo. Parece que estás pasando por un momento difícil.",
           "kind": "traducción"
+        },
+        {
+          "sourceIndex": 4,
+          "text": "Está bien sentirse estresado o preocupado a veces. Lo importante es cómo lo afrontas.",
+          "kind": "traducción"
+        },
+        {
+          "sourceIndex": 5,
+          "text": "Recuerda tomarte un tiempo para ti y cuidarte en los momentos de estrés.",
+          "kind": "traducción"
         }
       ]
     },

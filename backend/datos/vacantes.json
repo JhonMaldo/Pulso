@@ -1,0 +1,626 @@
+{
+  "aviso": "DATOS DE EJEMPLO creados por el equipo para la práctica. No son vacantes reales.",
+  "regla_minimos": "Aptitud clave: peso 3, mínimo 60. Primer apoyo: peso 2, mínimo 50. Segundo apoyo: peso 1, mínimo 40.",
+  "vacantes": [
+    {
+      "id": "V01",
+      "titulo": "Desarrollador/a web junior",
+      "empresa": "Empresa de ejemplo",
+      "area": "Desarrollo de software",
+      "modalidad": "Híbrido",
+      "descripcion": "Construye y mantiene páginas y servicios web junto con el equipo de desarrollo.",
+      "habilidades_clave": [
+        "HTML",
+        "CSS",
+        "JavaScript",
+        "Git"
+      ],
+      "requisitos": {
+        "A1": {
+          "minimo": 60,
+          "peso": 3
+        },
+        "A6": {
+          "minimo": 60,
+          "peso": 3
+        },
+        "A7": {
+          "minimo": 50,
+          "peso": 2
+        },
+        "A3": {
+          "minimo": 40,
+          "peso": 1
+        }
+      }
+    },
+    {
+      "id": "V02",
+      "titulo": "Desarrollador/a backend junior",
+      "empresa": "Empresa de ejemplo",
+      "area": "Desarrollo de software",
+      "modalidad": "Remoto",
+      "descripcion": "Programa servicios y APIs, y corrige errores en el servidor.",
+      "habilidades_clave": [
+        "Python",
+        "SQL",
+        "APIs REST",
+        "Git"
+      ],
+      "requisitos": {
+        "A1": {
+          "minimo": 60,
+          "peso": 3
+        },
+        "A6": {
+          "minimo": 60,
+          "peso": 3
+        },
+        "A2": {
+          "minimo": 50,
+          "peso": 2
+        },
+        "A7": {
+          "minimo": 40,
+          "peso": 1
+        }
+      }
+    },
+    {
+      "id": "V03",
+      "titulo": "QA / tester de software junior",
+      "empresa": "Empresa de ejemplo",
+      "area": "Desarrollo de software",
+      "modalidad": "Híbrido",
+      "descripcion": "Prueba aplicaciones, documenta errores y verifica que se corrijan.",
+      "habilidades_clave": [
+        "Casos de prueba",
+        "Reporte de errores",
+        "Jira"
+      ],
+      "requisitos": {
+        "A7": {
+          "minimo": 60,
+          "peso": 3
+        },
+        "A1": {
+          "minimo": 60,
+          "peso": 3
+        },
+        "A6": {
+          "minimo": 50,
+          "peso": 2
+        },
+        "A3": {
+          "minimo": 40,
+          "peso": 1
+        }
+      }
+    },
+    {
+      "id": "V04",
+      "titulo": "Analista de datos junior",
+      "empresa": "Empresa de ejemplo",
+      "area": "Datos",
+      "modalidad": "Híbrido",
+      "descripcion": "Limpia y analiza datos para responder preguntas del negocio.",
+      "habilidades_clave": [
+        "Excel",
+        "SQL",
+        "Python",
+        "Gráficas"
+      ],
+      "requisitos": {
+        "A2": {
+          "minimo": 60,
+          "peso": 3
+        },
+        "A1": {
+          "minimo": 60,
+          "peso": 3
+        },
+        "A7": {
+          "minimo": 50,
+          "peso": 2
+        },
+        "A3": {
+          "minimo": 40,
+          "peso": 1
+        }
+      }
+    },
+    {
+      "id": "V05",
+      "titulo": "Asistente de ciencia de datos",
+      "empresa": "Empresa de ejemplo",
+      "area": "Datos",
+      "modalidad": "Remoto",
+      "descripcion": "Apoya en la preparación de datos y en modelos sencillos de predicción.",
+      "habilidades_clave": [
+        "Python",
+        "Pandas",
+        "Estadística"
+      ],
+      "requisitos": {
+        "A2": {
+          "minimo": 60,
+          "peso": 3
+        },
+        "A1": {
+          "minimo": 60,
+          "peso": 3
+        },
+        "A6": {
+          "minimo": 60,
+          "peso": 3
+        },
+        "A3": {
+          "minimo": 50,
+          "peso": 2
+        }
+      }
+    },
+    {
+      "id": "V06",
+      "titulo": "Analista de BI junior",
+      "empresa": "Empresa de ejemplo",
+      "area": "Datos",
+      "modalidad": "Presencial",
+      "descripcion": "Arma tableros e informes y explica los resultados a otras áreas.",
+      "habilidades_clave": [
+        "Power BI",
+        "SQL",
+        "Presentaciones"
+      ],
+      "requisitos": {
+        "A2": {
+          "minimo": 60,
+          "peso": 3
+        },
+        "A3": {
+          "minimo": 60,
+          "peso": 3
+        },
+        "A7": {
+          "minimo": 50,
+          "peso": 2
+        },
+        "A5": {
+          "minimo": 40,
+          "peso": 1
+        }
+      }
+    },
+    {
+      "id": "V07",
+      "titulo": "Soporte técnico nivel 1",
+      "empresa": "Empresa de ejemplo",
+      "area": "Infraestructura y soporte",
+      "modalidad": "Presencial",
+      "descripcion": "Atiende a usuarios con fallas de equipo o de sistemas y da seguimiento a cada caso.",
+      "habilidades_clave": [
+        "Mesa de ayuda",
+        "Windows",
+        "Redes básicas"
+      ],
+      "requisitos": {
+        "A6": {
+          "minimo": 60,
+          "peso": 3
+        },
+        "A8": {
+          "minimo": 60,
+          "peso": 3
+        },
+        "A3": {
+          "minimo": 50,
+          "peso": 2
+        },
+        "A5": {
+          "minimo": 40,
+          "peso": 1
+        }
+      }
+    },
+    {
+      "id": "V08",
+      "titulo": "Administrador/a de redes junior",
+      "empresa": "Empresa de ejemplo",
+      "area": "Infraestructura y soporte",
+      "modalidad": "Presencial",
+      "descripcion": "Configura y vigila la red de la empresa, la VPN y los servidores.",
+      "habilidades_clave": [
+        "Linux",
+        "Redes TCP/IP",
+        "VPN",
+        "NGINX"
+      ],
+      "requisitos": {
+        "A6": {
+          "minimo": 60,
+          "peso": 3
+        },
+        "A1": {
+          "minimo": 60,
+          "peso": 3
+        },
+        "A7": {
+          "minimo": 50,
+          "peso": 2
+        },
+        "A5": {
+          "minimo": 40,
+          "peso": 1
+        }
+      }
+    },
+    {
+      "id": "V09",
+      "titulo": "Técnico/a de sistemas",
+      "empresa": "Empresa de ejemplo",
+      "area": "Infraestructura y soporte",
+      "modalidad": "Presencial",
+      "descripcion": "Instala, repara y da mantenimiento a equipos y sistemas.",
+      "habilidades_clave": [
+        "Hardware",
+        "Sistemas operativos",
+        "Inventario de equipo"
+      ],
+      "requisitos": {
+        "A6": {
+          "minimo": 60,
+          "peso": 3
+        },
+        "A7": {
+          "minimo": 60,
+          "peso": 3
+        },
+        "A5": {
+          "minimo": 50,
+          "peso": 2
+        },
+        "A4": {
+          "minimo": 40,
+          "peso": 1
+        }
+      }
+    },
+    {
+      "id": "V10",
+      "titulo": "Auxiliar administrativo",
+      "empresa": "Empresa de ejemplo",
+      "area": "Administración",
+      "modalidad": "Presencial",
+      "descripcion": "Organiza documentos, agenda y trámites del área administrativa.",
+      "habilidades_clave": [
+        "Office",
+        "Archivo",
+        "Atención de correos"
+      ],
+      "requisitos": {
+        "A5": {
+          "minimo": 60,
+          "peso": 3
+        },
+        "A7": {
+          "minimo": 60,
+          "peso": 3
+        },
+        "A3": {
+          "minimo": 50,
+          "peso": 2
+        },
+        "A2": {
+          "minimo": 40,
+          "peso": 1
+        }
+      }
+    },
+    {
+      "id": "V11",
+      "titulo": "Auxiliar contable",
+      "empresa": "Empresa de ejemplo",
+      "area": "Administración",
+      "modalidad": "Presencial",
+      "descripcion": "Registra facturas, pagos y conciliaciones bancarias.",
+      "habilidades_clave": [
+        "Excel",
+        "Facturación",
+        "Contabilidad básica"
+      ],
+      "requisitos": {
+        "A2": {
+          "minimo": 60,
+          "peso": 3
+        },
+        "A7": {
+          "minimo": 60,
+          "peso": 3
+        },
+        "A5": {
+          "minimo": 50,
+          "peso": 2
+        }
+      }
+    },
+    {
+      "id": "V12",
+      "titulo": "Analista de compras",
+      "empresa": "Empresa de ejemplo",
+      "area": "Administración",
+      "modalidad": "Híbrido",
+      "descripcion": "Cotiza, compara proveedores y da seguimiento a las órdenes de compra.",
+      "habilidades_clave": [
+        "Excel",
+        "Negociación",
+        "Seguimiento de pedidos"
+      ],
+      "requisitos": {
+        "A2": {
+          "minimo": 60,
+          "peso": 3
+        },
+        "A5": {
+          "minimo": 60,
+          "peso": 3
+        },
+        "A3": {
+          "minimo": 50,
+          "peso": 2
+        },
+        "A7": {
+          "minimo": 40,
+          "peso": 1
+        }
+      }
+    },
+    {
+      "id": "V13",
+      "titulo": "Ejecutivo/a de atención a clientes",
+      "empresa": "Empresa de ejemplo",
+      "area": "Atención y ventas",
+      "modalidad": "Presencial",
+      "descripcion": "Resuelve dudas y quejas de clientes por teléfono, chat y correo.",
+      "habilidades_clave": [
+        "Atención telefónica",
+        "CRM",
+        "Redacción"
+      ],
+      "requisitos": {
+        "A8": {
+          "minimo": 60,
+          "peso": 3
+        },
+        "A3": {
+          "minimo": 60,
+          "peso": 3
+        },
+        "A4": {
+          "minimo": 50,
+          "peso": 2
+        },
+        "A5": {
+          "minimo": 40,
+          "peso": 1
+        }
+      }
+    },
+    {
+      "id": "V14",
+      "titulo": "Asesor/a de ventas",
+      "empresa": "Empresa de ejemplo",
+      "area": "Atención y ventas",
+      "modalidad": "Presencial",
+      "descripcion": "Presenta productos, cotiza y cierra ventas con clientes.",
+      "habilidades_clave": [
+        "Ventas consultivas",
+        "Cotizaciones",
+        "CRM"
+      ],
+      "requisitos": {
+        "A8": {
+          "minimo": 60,
+          "peso": 3
+        },
+        "A3": {
+          "minimo": 60,
+          "peso": 3
+        },
+        "A2": {
+          "minimo": 50,
+          "peso": 2
+        },
+        "A5": {
+          "minimo": 40,
+          "peso": 1
+        }
+      }
+    },
+    {
+      "id": "V15",
+      "titulo": "Community manager",
+      "empresa": "Empresa de ejemplo",
+      "area": "Atención y ventas",
+      "modalidad": "Remoto",
+      "descripcion": "Publica contenido y responde a la comunidad en redes sociales.",
+      "habilidades_clave": [
+        "Redes sociales",
+        "Redacción",
+        "Calendario de contenido"
+      ],
+      "requisitos": {
+        "A3": {
+          "minimo": 60,
+          "peso": 3
+        },
+        "A8": {
+          "minimo": 60,
+          "peso": 3
+        },
+        "A5": {
+          "minimo": 50,
+          "peso": 2
+        },
+        "A4": {
+          "minimo": 40,
+          "peso": 1
+        }
+      }
+    },
+    {
+      "id": "V16",
+      "titulo": "Auxiliar de logística",
+      "empresa": "Empresa de ejemplo",
+      "area": "Logística",
+      "modalidad": "Presencial",
+      "descripcion": "Prepara envíos, revisa guías y coordina entregas.",
+      "habilidades_clave": [
+        "Guías de envío",
+        "Control de rutas",
+        "Excel"
+      ],
+      "requisitos": {
+        "A5": {
+          "minimo": 60,
+          "peso": 3
+        },
+        "A7": {
+          "minimo": 60,
+          "peso": 3
+        },
+        "A2": {
+          "minimo": 50,
+          "peso": 2
+        },
+        "A4": {
+          "minimo": 40,
+          "peso": 1
+        }
+      }
+    },
+    {
+      "id": "V17",
+      "titulo": "Coordinador/a de almacén",
+      "empresa": "Empresa de ejemplo",
+      "area": "Logística",
+      "modalidad": "Presencial",
+      "descripcion": "Organiza entradas, salidas y acomodo del almacén con su equipo.",
+      "habilidades_clave": [
+        "Inventarios",
+        "Planeación",
+        "Liderazgo de equipo"
+      ],
+      "requisitos": {
+        "A5": {
+          "minimo": 60,
+          "peso": 3
+        },
+        "A2": {
+          "minimo": 60,
+          "peso": 3
+        },
+        "A7": {
+          "minimo": 50,
+          "peso": 2
+        },
+        "A4": {
+          "minimo": 40,
+          "peso": 1
+        }
+      }
+    },
+    {
+      "id": "V18",
+      "titulo": "Analista de inventarios",
+      "empresa": "Empresa de ejemplo",
+      "area": "Logística",
+      "modalidad": "Híbrido",
+      "descripcion": "Cuadra existencias, detecta diferencias y propone ajustes.",
+      "habilidades_clave": [
+        "Excel",
+        "Conteos cíclicos",
+        "ERP"
+      ],
+      "requisitos": {
+        "A2": {
+          "minimo": 60,
+          "peso": 3
+        },
+        "A7": {
+          "minimo": 60,
+          "peso": 3
+        },
+        "A5": {
+          "minimo": 50,
+          "peso": 2
+        },
+        "A1": {
+          "minimo": 40,
+          "peso": 1
+        }
+      }
+    },
+    {
+      "id": "V19",
+      "titulo": "Asistente de proyectos",
+      "empresa": "Empresa de ejemplo",
+      "area": "Proyectos",
+      "modalidad": "Híbrido",
+      "descripcion": "Da seguimiento a tareas, minutas y fechas de los proyectos.",
+      "habilidades_clave": [
+        "Cronogramas",
+        "Minutas",
+        "Trello"
+      ],
+      "requisitos": {
+        "A5": {
+          "minimo": 60,
+          "peso": 3
+        },
+        "A4": {
+          "minimo": 60,
+          "peso": 3
+        },
+        "A3": {
+          "minimo": 50,
+          "peso": 2
+        },
+        "A7": {
+          "minimo": 40,
+          "peso": 1
+        }
+      }
+    },
+    {
+      "id": "V20",
+      "titulo": "Scrum master junior",
+      "empresa": "Empresa de ejemplo",
+      "area": "Proyectos",
+      "modalidad": "Remoto",
+      "descripcion": "Facilita las ceremonias SCRUM y ayuda al equipo a quitar bloqueos.",
+      "habilidades_clave": [
+        "SCRUM",
+        "Facilitación",
+        "Tableros Kanban"
+      ],
+      "requisitos": {
+        "A4": {
+          "minimo": 60,
+          "peso": 3
+        },
+        "A5": {
+          "minimo": 60,
+          "peso": 3
+        },
+        "A3": {
+          "minimo": 60,
+          "peso": 3
+        },
+        "A8": {
+          "minimo": 50,
+          "peso": 2
+        }
+      }
+    }
+  ]
+}

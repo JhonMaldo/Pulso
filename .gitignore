@@ -1,2 +1,12 @@
 node_modules/
 dist/
+contexto/
+__pycache__/
+.pytest_cache/
+.venv/
+.env
+*.pem
+*.key
+backend/datos/*.db
+backend/datos/*.db-wal
+backend/datos/*.db-shm
